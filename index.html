@@ -432,17 +432,85 @@
                 <h1 id="yamlable">yamlable<a class="headerlink" href="#yamlable" title="Permanent link">&para;</a></h1>
 <p><em>A thin wrapper of PyYaml to convert Python objects to YAML and back.</em></p>
 <p><a href="https://travis-ci.org/smarie/python-yamlable"><img alt="Build Status" src="https://travis-ci.org/smarie/python-yamlable.svg?branch=master" /></a> <a href="https://smarie.github.io/python-yamlable/junit/report.html"><img alt="Tests Status" src="https://smarie.github.io/python-yamlable/junit/junit-badge.svg?dummy=8484744" /></a> <a href="https://codecov.io/gh/smarie/python-yamlable"><img alt="codecov" src="https://codecov.io/gh/smarie/python-yamlable/branch/master/graph/badge.svg" /></a> <a href="https://smarie.github.io/python-yamlable/"><img alt="Documentation" src="https://img.shields.io/badge/docs-latest-blue.svg" /></a> <a href="https://pypi.python.org/pypi/yamlable/"><img alt="PyPI" src="https://img.shields.io/badge/PyPI-yamlable-blue.svg" /></a></p>
+<p>PyYaml is a great library. However it is a bit hard for anyone to add the yaml capability to their classes. Its <code>YamlObject</code> helper class is a first step but it has two drawbacks:
+ * one has to master PyYaml Loader/Dumper internal features to understand what they are doing
+ * there is a mandatory metaclass, which can prevent wide adoption (multiple inheritance with metaclasses...)</p>
+<p><code>yamlable</code> provides a very easy way for you to leverage PyYaml without suffering the complexity: simply inherit from <code>YamlAble</code>, decorate with <code>@yaml_info</code>, implement the abstract methods to write to / load from a dictionary, and you're set!</p>
+<p>In addition <code>yamlable</code> provides 
+ * a way to creade Yaml codecs for several object types at the same time (<code>YamlCodec</code>).
+ * an alternative to <code>YamlAble</code> that relies strictly on <code>YamlObject</code>: <code>YamlObject2</code></p>
 <h2 id="installing">Installing<a class="headerlink" href="#installing" title="Permanent link">&para;</a></h2>
 <div class="codehilite"><pre><span></span>&gt; pip install yamlable
 </pre></div>
 
 
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
-<p>TODO</p>
-<p>See <a href="./usage">Usage</a> for a complete example with exceptions handling and more.</p>
+<p>Let's make a class yaml-able: we have to
+ - inherit from <code>YamlAble</code>
+ - decorate it with the <code>@yaml_info</code> annotation to declare the associated yaml tag
+ - implement <code>from_yaml_dict</code> (class method called during decoding) and <code>to_yaml_dict</code> (instance method called during encoding)</p>
+<div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">yamlable</span> <span class="kn">import</span> <span class="n">yaml_info</span><span class="p">,</span> <span class="n">YamlAble</span>
+
+<span class="nd">@yaml_info</span><span class="p">(</span><span class="n">yaml_tag_ns</span><span class="o">=</span><span class="s1">&#39;com.yamlable.example&#39;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">Foo</span><span class="p">(</span><span class="n">YamlAble</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Constructor &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="n">a</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">b</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">irrelevant</span> <span class="o">=</span> <span class="mi">37</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; String representation for prints &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;Foo - &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">to_yaml_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; This method is called when you call yaml.dump()&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">}</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_yaml_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dct</span><span class="p">,</span> <span class="n">yaml_tag</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; This method is called when you call yaml.load()&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Foo</span><span class="p">(</span><span class="n">dct</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">],</span> <span class="n">dct</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">])</span>
+</pre></div>
+
+
+<p>That's it! Let's check that our class is correct and allows us to create instances:</p>
+<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">f</span> <span class="o">=</span> <span class="n">Foo</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;hello&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+<span class="n">Foo</span> <span class="o">-</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="s1">&#39;hello&#39;</span><span class="p">}</span>
+</pre></div>
+
+
+<p>The object directly has the <code>dump_yaml</code> (dumping to file) / <code>dumps_yaml</code> (dumping to string) methods:</p>
+<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">dumps_yaml</span><span class="p">())</span>
+
+<span class="err">!</span><span class="n">yamlable</span><span class="o">/</span><span class="n">com</span><span class="o">.</span><span class="n">yamlable</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">Foo</span> <span class="p">{</span><span class="n">a</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">hello</span><span class="p">}</span>
+</pre></div>
+
+
+<p>The class directly has the <code>load_yaml</code> (load from file) / <code>loads_yaml</code> (load from string) methods</p>
+<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">Foo</span><span class="o">.</span><span class="n">loads_yaml</span><span class="p">(</span><span class="s2">&quot;!yamlable/com.yamlable.example.Foo {a: 0, b: hey}&quot;</span><span class="p">))</span>
+
+<span class="n">Foo</span> <span class="o">-</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="s1">&#39;hey&#39;</span><span class="p">}</span>
+</pre></div>
+
+
+<p>See pyyaml help page for the various formatting arguments that you can use..</p>
+<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">dumps_yaml</span><span class="p">(</span><span class="n">default_flow_style</span><span class="o">=</span><span class="bp">False</span><span class="p">))</span>
+
+<span class="err">!</span><span class="n">yamlable</span><span class="o">/</span><span class="n">com</span><span class="o">.</span><span class="n">yamlable</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">Foo</span>
+<span class="n">a</span><span class="p">:</span> <span class="mi">1</span>
+<span class="n">b</span><span class="p">:</span> <span class="n">hello</span>
+</pre></div>
+
+
+<p>See <a href="./usage">Usage</a> for other possibilities of <code>yamlable</code>.</p>
 <h2 id="main-features-benefits">Main features / benefits<a class="headerlink" href="#main-features-benefits" title="Permanent link">&para;</a></h2>
 <ul>
-<li>TODO </li>
+<li>Add yaml-ability to any class easily through inheritance without metaclass (as opposed to <code>YamlObject</code>) and without knowledge of internal PyYaml loader/dumper logic.</li>
+<li>Write codecs to support several types at a time with <code>YamlCodec</code></li>
 </ul>
 <h2 id="see-also">See Also<a class="headerlink" href="#see-also" title="Permanent link">&para;</a></h2>
 <p><a href="http://pyyaml.org/wiki/PyYAMLDocumentation">PyYaml documentation</a></p>

@@ -432,23 +432,25 @@
                 <h1 id="yamlable">yamlable<a class="headerlink" href="#yamlable" title="Permanent link">&para;</a></h1>
 <p><em>A thin wrapper of PyYaml to convert Python objects to YAML and back.</em></p>
 <p><a href="https://travis-ci.org/smarie/python-yamlable"><img alt="Build Status" src="https://travis-ci.org/smarie/python-yamlable.svg?branch=master" /></a> <a href="https://smarie.github.io/python-yamlable/junit/report.html"><img alt="Tests Status" src="https://smarie.github.io/python-yamlable/junit/junit-badge.svg?dummy=8484744" /></a> <a href="https://codecov.io/gh/smarie/python-yamlable"><img alt="codecov" src="https://codecov.io/gh/smarie/python-yamlable/branch/master/graph/badge.svg" /></a> <a href="https://smarie.github.io/python-yamlable/"><img alt="Documentation" src="https://img.shields.io/badge/docs-latest-blue.svg" /></a> <a href="https://pypi.python.org/pypi/yamlable/"><img alt="PyPI" src="https://img.shields.io/badge/PyPI-yamlable-blue.svg" /></a></p>
-<p>PyYaml is a great library. However it is a bit hard for anyone to add the yaml capability to their classes. Its <code>YamlObject</code> helper class is a first step but it has two drawbacks:
- * one has to master PyYaml Loader/Dumper internal features to understand what they are doing
- * there is a mandatory metaclass, which can prevent wide adoption (multiple inheritance with metaclasses...)</p>
-<p><code>yamlable</code> provides a very easy way for you to leverage PyYaml without suffering the complexity: simply inherit from <code>YamlAble</code>, decorate with <code>@yaml_info</code>, implement the abstract methods to write to / load from a dictionary, and you're set!</p>
-<p>In addition <code>yamlable</code> provides 
- * a way to creade Yaml codecs for several object types at the same time (<code>YamlCodec</code>).
- * an alternative to <code>YamlAble</code> that relies strictly on <code>YamlObject</code>: <code>YamlObject2</code></p>
+<p>PyYaml is a great library. However it is a bit hard for anyone to add the yaml capability to their classes. Its <code>YamlObject</code> helper class is a first step but it has two drawbacks:</p>
+<ul>
+<li>one has to master PyYaml Loader/Dumper internal features to understand what they are doing</li>
+<li>there is a mandatory metaclass, which can prevent wide adoption (multiple inheritance with metaclasses...)</li>
+</ul>
+<p><code>yamlable</code> provides a very easy way for you to leverage PyYaml without seeing the complexity: simply inherit from <code>YamlAble</code>, decorate with <code>@yaml_info</code>, implement the abstract methods to write to / load from a dictionary, and you're set!</p>
+<p>In addition <code>yamlable</code> provides a way to creade Yaml codecs for several object types at the same time (<code>YamlCodec</code>) (see Usage page)</p>
 <h2 id="installing">Installing<a class="headerlink" href="#installing" title="Permanent link">&para;</a></h2>
 <div class="codehilite"><pre><span></span>&gt; pip install yamlable
 </pre></div>
 
 
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
-<p>Let's make a class yaml-able: we have to
- - inherit from <code>YamlAble</code>
- - decorate it with the <code>@yaml_info</code> annotation to declare the associated yaml tag
- - implement <code>from_yaml_dict</code> (class method called during decoding) and <code>to_yaml_dict</code> (instance method called during encoding)</p>
+<p>Let's make a class yaml-able: we have to</p>
+<ul>
+<li>inherit from <code>YamlAble</code></li>
+<li>decorate it with the <code>@yaml_info</code> annotation to declare the associated yaml tag</li>
+<li>implement <code>from_yaml_dict</code> (class method called during decoding) and <code>to_yaml_dict</code> (instance method called during encoding)</li>
+</ul>
 <div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">yamlable</span> <span class="kn">import</span> <span class="n">yaml_info</span><span class="p">,</span> <span class="n">YamlAble</span>
 
 <span class="nd">@yaml_info</span><span class="p">(</span><span class="n">yaml_tag_ns</span><span class="o">=</span><span class="s1">&#39;com.yamlable.example&#39;</span><span class="p">)</span>
@@ -506,11 +508,13 @@
 </pre></div>
 
 
+<p>For more general cases where your object is embedded in a more complex structure for example, you can of course call pyyaml <code>dump</code>/<code>load</code> functions, it will work as expected.</p>
 <p>See <a href="./usage">Usage</a> for other possibilities of <code>yamlable</code>.</p>
 <h2 id="main-features-benefits">Main features / benefits<a class="headerlink" href="#main-features-benefits" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Add yaml-ability to any class easily through inheritance without metaclass (as opposed to <code>YamlObject</code>) and without knowledge of internal PyYaml loader/dumper logic.</li>
 <li>Write codecs to support several types at a time with <code>YamlCodec</code></li>
+<li>If you absolutely wish to use PyYaml's <code>YamlObject</code> for some reason, you can use <code>YamlObject2</code> as an alternative to <code>YamlAble</code>. But it comes with the metaclass, like <code>YamlObject</code>.</li>
 </ul>
 <h2 id="see-also">See Also<a class="headerlink" href="#see-also" title="Permanent link">&para;</a></h2>
 <p><a href="http://pyyaml.org/wiki/PyYAMLDocumentation">PyYaml documentation</a></p>

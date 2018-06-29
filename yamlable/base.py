@@ -9,7 +9,7 @@ except ImportError:
     pass # normal for old versions of typing
 
 
-AYO = TypeVar('AYO', bound='AbstractYamlObject')
+Y = TypeVar('Y', bound='AbstractYamlObject')
 
 
 class AbstractYamlObject(ABC):
@@ -30,7 +30,7 @@ class AbstractYamlObject(ABC):
 
     @classmethod
     @abstractmethod
-    def from_yaml_dict(cls: 'Type[AYO]', dct: Dict, yaml_tag: str) -> AYO:
+    def from_yaml_dict(cls: 'Type[Y]', dct: Dict[Any, Any], yaml_tag: str) -> Y:
         """
         Implementors should transform the given dictionary (read from yaml by the pyYaml stack) into an object instance.
         The yaml tag associated to this object, read in the yaml document, is provided in parameter.
@@ -71,7 +71,7 @@ class AbstractYamlObject(ABC):
         return dump(self, **pyyaml_kwargs)
 
     @classmethod
-    def loads_yaml(cls: 'Type[AYO]', yaml_str: str) -> AYO:
+    def loads_yaml(cls: 'Type[Y]', yaml_str: str) -> Y:
         """
         Utility method to
         :param yaml_str
@@ -80,7 +80,7 @@ class AbstractYamlObject(ABC):
         return cls.load_yaml(StringIO(yaml_str))
 
     @classmethod
-    def load_yaml(cls: 'Type[AYO]', file_path_or_stream: Union[str, TextIOBase]) -> AYO:
+    def load_yaml(cls: 'Type[Y]', file_path_or_stream: Union[str, TextIOBase]) -> Y:
         """
         Parses the given file path or stream as a yaml document with the
 

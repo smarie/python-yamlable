@@ -4,7 +4,7 @@ from typing import Dict, Any
 import pytest
 from yaml import dump, load
 
-from yamlable import YamlAble, yaml_info, AYO
+from yamlable import YamlAble, yaml_info, Y
 
 
 def test_yamlable_incomplete_description():
@@ -16,7 +16,7 @@ def test_yamlable_incomplete_description():
                 return copy(vars(self))
 
             @classmethod
-            def from_yaml_dict(cls: 'Type[AYO]', dct: Dict, yaml_tag: str) -> AYO:
+            def from_yaml_dict(cls: 'Type[Y]', dct: Dict, yaml_tag: str) -> Y:
                 return Foo(**dct)
 
         # instantiate
@@ -46,7 +46,7 @@ def test_yamlable():
             return copy(vars(self))
 
         @classmethod
-        def from_yaml_dict(cls: 'Type[AYO]', dct: Dict, yaml_tag: str) -> AYO:
+        def from_yaml_dict(cls: 'Type[Y]', dct: Dict, yaml_tag: str) -> Y:
             return Foo(**dct)
 
     # instantiate
@@ -84,7 +84,7 @@ def test_yamlable_not_supported():
             return copy(vars(self))
 
         @classmethod
-        def from_yaml_dict(cls: 'Type[AYO]', dct: Dict, yaml_tag: str) -> AYO:
+        def from_yaml_dict(cls: 'Type[Y]', dct: Dict, yaml_tag: str) -> Y:
             return Foo_Err(**dct)
 
         @classmethod

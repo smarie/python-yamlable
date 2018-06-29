@@ -5,14 +5,13 @@
 [![Build Status](https://travis-ci.org/smarie/python-yamlable.svg?branch=master)](https://travis-ci.org/smarie/python-yamlable) [![Tests Status](https://smarie.github.io/python-yamlable/junit/junit-badge.svg?dummy=8484744)](https://smarie.github.io/python-yamlable/junit/report.html) [![codecov](https://codecov.io/gh/smarie/python-yamlable/branch/master/graph/badge.svg)](https://codecov.io/gh/smarie/python-yamlable) [![Documentation](https://img.shields.io/badge/docs-latest-blue.svg)](https://smarie.github.io/python-yamlable/) [![PyPI](https://img.shields.io/badge/PyPI-yamlable-blue.svg)](https://pypi.python.org/pypi/yamlable/)
 
 PyYaml is a great library. However it is a bit hard for anyone to add the yaml capability to their classes. Its `YamlObject` helper class is a first step but it has two drawbacks:
+
  * one has to master PyYaml Loader/Dumper internal features to understand what they are doing
  * there is a mandatory metaclass, which can prevent wide adoption (multiple inheritance with metaclasses...)
 
-`yamlable` provides a very easy way for you to leverage PyYaml without suffering the complexity: simply inherit from `YamlAble`, decorate with `@yaml_info`, implement the abstract methods to write to / load from a dictionary, and you're set!
+`yamlable` provides a very easy way for you to leverage PyYaml without seeing the complexity: simply inherit from `YamlAble`, decorate with `@yaml_info`, implement the abstract methods to write to / load from a dictionary, and you're set!
 
-In addition `yamlable` provides 
- * a way to creade Yaml codecs for several object types at the same time (`YamlCodec`).
- * an alternative to `YamlAble` that relies strictly on `YamlObject`: `YamlObject2`
+In addition `yamlable` provides a way to creade Yaml codecs for several object types at the same time (`YamlCodec`) (see Usage page)
 
 
 ## Installing
@@ -24,6 +23,7 @@ In addition `yamlable` provides
 ## Usage
 
 Let's make a class yaml-able: we have to
+
  - inherit from `YamlAble`
  - decorate it with the `@yaml_info` annotation to declare the associated yaml tag
  - implement `from_yaml_dict` (class method called during decoding) and `to_yaml_dict` (instance method called during encoding)
@@ -89,6 +89,9 @@ a: 1
 b: hello
 ```
 
+For more general cases where your object is embedded in a more complex structure for example, you can of course call pyyaml `dump`/`load` functions, it will work as expected.
+
+
 See [Usage](./usage) for other possibilities of `yamlable`.
 
 
@@ -96,7 +99,7 @@ See [Usage](./usage) for other possibilities of `yamlable`.
 
  * Add yaml-ability to any class easily through inheritance without metaclass (as opposed to `YamlObject`) and without knowledge of internal PyYaml loader/dumper logic.
  * Write codecs to support several types at a time with `YamlCodec`
-
+ * If you absolutely wish to use PyYaml's `YamlObject` for some reason, you can use `YamlObject2` as an alternative to `YamlAble`. But it comes with the metaclass, like `YamlObject`.
 
 ## See Also
 

@@ -8,14 +8,15 @@ from yaml import YAMLObjectMetaclass, YAMLObject, SafeLoader
 
 from yamlable.base import NONE_IGNORE_CHECKS, AbstractYamlObject, read_yaml_node_as_dict
 
-SYO = TypeVar('SYO', bound='YamlObject2')
+
+YO2 = TypeVar('YO2', bound='YamlObject2')
 
 
 class YAMLObjectMetaclassStrict(YAMLObjectMetaclass):
     """
     Improved metaclass for YAMLObject, that raises an error if yaml_tag is not defined
     """
-    def __init__(cls: 'Type[SYO]', name, bases, kwds):
+    def __init__(cls: 'Type[YO2]', name, bases, kwds):
 
         # construct as usual
         super(YAMLObjectMetaclass, cls).__init__(name, bases, kwds)

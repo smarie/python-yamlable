@@ -1,24 +1,19 @@
-from abc import ABCMeta, abstractmethod, ABC
+from abc import abstractmethod, ABC
 from typing import TypeVar, Callable, Optional, Iterable, Any, Tuple
-
-from yaml import Loader, SafeLoader, Dumper, SafeDumper
-
-from yaml_objects import YamlObject2
-
 try:
     from typing import Type
 except ImportError:
     pass # normal for old versions of typing
 
-
-from six import add_metaclass
+from yaml import Loader, SafeLoader, Dumper, SafeDumper
 
 from yamlable.base import AbstractYamlObject, NONE_IGNORE_CHECKS, read_yaml_node_as_dict
+from yamlable.yaml_objects import YamlObject2
+
 
 YAMLABLE_PREFIX = '!yamlable/'
 
 
-@add_metaclass(ABCMeta)
 class AbstractYamlAble(AbstractYamlObject):
     """
     The abstract part of YamlAble. It might be useful to inherit if you want to create a super class for several

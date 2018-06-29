@@ -3,7 +3,7 @@ from typing import Dict, Any
 
 import pytest
 
-from yamlable import YamlObject2, YT_co
+from yamlable import YamlObject2, AYO
 
 
 def test_yamlobject_incomplete_description():
@@ -33,7 +33,7 @@ def test_yamlobject_simple():
             return copy(vars(self))
 
         @classmethod
-        def from_yaml_dict(cls: 'Type[YT_co]', dct: Dict, yaml_tag: str) -> YT_co:
+        def from_yaml_dict(cls: 'Type[AYO]', dct: Dict, yaml_tag: str) -> AYO:
             return Foo(**dct)
 
     # instantiate

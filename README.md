@@ -74,4 +74,3 @@ This project is now automatically deployed to PyPI when a tag is created. Anyway
 twine upload dist/* -r pypitest
 twine upload dist/*
 ```
-

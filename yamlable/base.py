@@ -26,7 +26,7 @@ class AbstractYamlObject(ABC):
         Implementors should transform the object into a dictionary containing all information necessary to decode the
         object in the future. That dictionary will be serialized as a YAML mapping.
 
-        Default implementation returns vars(self)
+        Default implementation returns vars(self). TODO maybe some day we'll need to rather make a copy...?
         :return:
         """
         return vars(self)
@@ -49,51 +49,65 @@ class AbstractYamlObject(ABC):
         """
         return cls(**dct)
 
-    def dump_yaml(self, file_path_or_stream: Union[str, TextIOBase], **pyyaml_kwargs):
+    def dump_yaml(self, file_path_or_stream: Union[str, TextIOBase], safe: bool = True, **pyyaml_kwargs):
         """
         Dumps this object to a yaml file or stream using pyYaml.
 
         :param file_path_or_stream: either a string representing the file path, or a stream where to write
+        :param safe: True (default) uses `yaml.safe_dump`. False uses `yaml.dump`
         :param pyyaml_kwargs: keyword arguments for the pyYaml dump method
         :return:
         """
-        from yaml import dump
+        from yaml import safe_dump, dump
         if isinstance(file_path_or_stream, str):
             with open(file_path_or_stream, mode='wt') as f:
-                dump(self, f, **pyyaml_kwargs)
+                if safe:
+                    safe_dump(self, f, **pyyaml_kwargs)
+                else:
+                    dump(self, f, **pyyaml_kwargs)
         else:
             with file_path_or_stream as f:
-                dump(self, f, **pyyaml_kwargs)
+                if safe:
+                    safe_dump(self, f, **pyyaml_kwargs)
+                else:
+                    dump(self, f, **pyyaml_kwargs)
 
-    def dumps_yaml(self, **pyyaml_kwargs):
+    def dumps_yaml(self, safe: bool = True, **pyyaml_kwargs):
         """
         Dumps this object to a yaml string and returns it.
 
         :param pyyaml_kwargs: keyword arguments for the pyYaml dump method
+        :param safe: True (default) uses `yaml.safe_dump`. False uses `yaml.dump`
         :return:
         """
-        from yaml import dump
-        return dump(self, **pyyaml_kwargs)
+        from yaml import safe_dump, dump
+        if safe:
+            return safe_dump(self, **pyyaml_kwargs)
+        else:
+            return dump(self, **pyyaml_kwargs)
 
     @classmethod
-    def loads_yaml(cls: 'Type[Y]', yaml_str: str) -> Y:
+    def loads_yaml(cls: 'Type[Y]', yaml_str: str, safe: bool=True) -> Y:
         """
-        Utility method to
-        :param yaml_str
+        Utility method to load an instance of this class from the provided yaml string. This methods only returns
+        successfully if the result is an instance of `cls`.
+
+        :param yaml_str:
+        :param safe: True (default) uses `yaml.safe_load`. False uses `yaml.load`
         :return:
         """
-        return cls.load_yaml(StringIO(yaml_str))
+        return cls.load_yaml(StringIO(yaml_str), safe=safe)
 
     @classmethod
-    def load_yaml(cls: 'Type[Y]', file_path_or_stream: Union[str, TextIOBase]) -> Y:
+    def load_yaml(cls: 'Type[Y]', file_path_or_stream: Union[str, TextIOBase], safe: bool=True) -> Y:
         """
-        Parses the given file path or stream as a yaml document with the
+        Parses the given file path or stream as a yaml document. This methods only returns successfully if the result
+        is an instance of `cls`.
 
         :param file_path_or_stream:
+        :param safe: True (default) uses `yaml.safe_load`. False uses `yaml.load`
         :return:
         """
-        safe = True  # note: we cannot offer this as a parameter, otherwise to_yaml/from_yaml are not used apparently
-
         from yaml import safe_load, load
         if isinstance(file_path_or_stream, str):
             with open(file_path_or_stream, mode='rt') as f:

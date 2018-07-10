@@ -40,7 +40,7 @@ def test_yamlobject_simple():
     f = Foo(1, 'hello')
 
     # dump to yaml
-    o = f.dumps_yaml()
+    o = f.dumps_yaml(safe=False)
     assert o == "!foo {a: 1, b: hello}\n"
 
     # load from yaml

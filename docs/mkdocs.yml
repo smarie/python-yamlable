@@ -1,6 +1,6 @@
 site_name: yamlable
 # site_description: 'A short description of my project'
-repo_url: https://github.com/smarie/python-pytest-cases
+repo_url: https://github.com/smarie/python-yamlable
 pages:
     - Home: index.md
     - Usage details: usage.md

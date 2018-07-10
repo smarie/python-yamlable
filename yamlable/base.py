@@ -17,19 +17,21 @@ class AbstractYamlObject(ABC):
     Adds convenient methods load(s)_yaml/dump(s)_yaml to any object, to call pyyaml features directly on the object or
     on the object class.
 
-    Also adds the two abstract methods to_yaml_dict / from_yaml_dict, that are common to YamlObject2 and YamlAble
+    Also adds the two methods to_yaml_dict / from_yaml_dict, that are common to YamlObject2 and YamlAble.
+    Default implementation uses vars(self) and cls(**dct), but subclasses can override.
     """
 
-    @abstractmethod
     def to_yaml_dict(self) -> Dict[str, Any]:
         """
         Implementors should transform the object into a dictionary containing all information necessary to decode the
         object in the future. That dictionary will be serialized as a YAML mapping.
+
+        Default implementation returns vars(self)
         :return:
         """
+        return vars(self)
 
     @classmethod
-    @abstractmethod
     def from_yaml_dict(cls: 'Type[Y]', dct: Dict[Any, Any], yaml_tag: str) -> Y:
         """
         Implementors should transform the given dictionary (read from yaml by the pyYaml stack) into an object instance.
@@ -38,11 +40,14 @@ class AbstractYamlObject(ABC):
         Note that for YamlAble and YamlObject2 subclasses, if this method is called the yaml tag will already have
         been checked so implementors do not have to validate it.
 
+        Default implementation returns cls(**dct)
+
         :param dct:
         :param yaml_tag: the yaml schema id that was used for encoding the object (it has already been checked
             against is_json_schema_id_supported)
         :return:
         """
+        return cls(**dct)
 
     def dump_yaml(self, file_path_or_stream: Union[str, TextIOBase], **pyyaml_kwargs):
         """

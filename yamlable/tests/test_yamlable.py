@@ -96,3 +96,19 @@ def test_yamlable_not_supported():
         Foo_Err.loads_yaml("!yamlable/yaml.tests.Foo_Err {a: 1, b: hello}\n")
 
     assert "No YamlAble subclass found able to decode object" in str(err_info.value)
+
+
+def test_yamlable_default_impl():
+    """ tests that the default implementation works """
+
+    @yaml_info(yaml_tag_ns='yaml.tests')
+    class Foo_Default(YamlAble):
+        def __init__(self, a, b):
+            self.a = a
+            self.b = b
+
+    f = Foo_Default(1, 'hello')
+    s = '!yamlable/yaml.tests.Foo_Default {a: 1, b: hello}\n'
+    assert dump(f) == s
+
+    assert dump(load(dump(load(s)))) == s

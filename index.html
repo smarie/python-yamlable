@@ -494,7 +494,7 @@
 </pre></div>
 
 
-<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;!yamlable/com.yamlable.example.Foo {a: 0, b: hey}&quot;</span><span class="p">))</span>
+<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="s2">&quot;!yamlable/com.yamlable.example.Foo {a: 0, b: hey}&quot;</span><span class="p">))</span>
 
 <span class="n">Foo</span> <span class="o">-</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="s1">&#39;hey&#39;</span><span class="p">}</span>
 </pre></div>
@@ -502,7 +502,7 @@
 
 <p>For more general cases where your object is embedded in a more complex structure for example, it will work as expected:</p>
 <div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;foo&#39;</span><span class="p">:</span> <span class="n">f</span><span class="p">,</span> <span class="s1">&#39;foo2&#39;</span><span class="p">:</span> <span class="mi">12</span><span class="p">}</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">safe_dump</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
 
 <span class="n">foo</span><span class="p">:</span> <span class="err">!</span><span class="n">yamlable</span><span class="o">/</span><span class="n">com</span><span class="o">.</span><span class="n">yamlable</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">Foo</span> <span class="p">{</span><span class="n">a</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">hello</span><span class="p">}</span>
 <span class="n">foo2</span><span class="p">:</span> <span class="mi">12</span>

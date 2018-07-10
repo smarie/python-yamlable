@@ -75,7 +75,7 @@ Now let's dump and load it using `pyyaml`:
 ```
 
 ```python
->>> print(yaml.load("!yamlable/com.yamlable.example.Foo {a: 0, b: hey}"))
+>>> print(yaml.safe_load("!yamlable/com.yamlable.example.Foo {a: 0, b: hey}"))
 
 Foo - {'a': 0, 'b': 'hey'}
 ```
@@ -84,7 +84,7 @@ For more general cases where your object is embedded in a more complex structure
 
 ```python
 >>> d = {'foo': f, 'foo2': 12}
->>> print(yaml.dump(d))
+>>> print(yaml.safe_dump(d))
 
 foo: !yamlable/com.yamlable.example.Foo {a: 1, b: hello}
 foo2: 12

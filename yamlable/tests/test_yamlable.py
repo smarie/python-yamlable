@@ -112,3 +112,21 @@ def test_yamlable_default_impl():
     assert dump(f) == s
 
     assert dump(load(dump(load(s)))) == s
+
+
+def test_help_yaml_info():
+
+    @yaml_info("com.example.MyFoo")
+    class Foo(YamlAble):
+        pass
+
+    assert Foo.__yaml_tag_suffix__ == "com.example.MyFoo"
+
+    @yaml_info(yaml_tag_ns="com.example")
+    class Foo(YamlAble):
+        pass
+
+    assert Foo.__yaml_tag_suffix__ == "com.example.Foo"
+
+    assert Foo().dumps_yaml() == """!yamlable/com.example.Foo {}
+"""

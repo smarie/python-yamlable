@@ -86,10 +86,37 @@ class YamlAble(AbstractYamlAble):
 def yaml_info(yaml_tag: str = None, yaml_tag_ns: str = None) \
         -> Callable[['Type[YA]', Optional[str], Optional[str]], 'Type[YA]']:
     """
-    A simple class decorator to tag a class with a global yaml tag - that way no need to call YamlAble super constructor
+    A simple class decorator to tag a class with a global yaml tag - that way you do not have to call `YamlAble` super
+    constructor.
 
-    :param yaml_tag:
-    :param yaml_tag_ns:
+    You can either provide a full yaml tag suffix:
+
+    ```python
+    @yaml_info("com.example.MyFoo")
+    class Foo(YamlAble):
+        pass
+
+    print(Foo.__yaml_tag_suffix__)  # yields "com.example.MyFoo"
+    ```
+
+    or simply provide a namespace, that will be appended with '.<class name>' :
+
+    ```python
+    @yaml_info(yaml_tag_ns="com.example")
+    class Foo(YamlAble):
+        pass
+
+    print(MyFoo.__yaml_tag_suffix__)  # yields "com.example.Foo"
+    ```
+
+    In both cases, the suffix is appended at the end of the common yamlable prefix:
+
+    ```python
+    print(Foo().dumps_yaml())  # yields "!yamlable/com.example.Foo {}"
+    ```
+
+    :param yaml_tag: the complete yaml suffix.
+    :param yaml_tag_ns: the yaml namespace. It will be appended with '.<cls.__name__>'
     :return:
     """
     def f(cls):
@@ -99,11 +126,38 @@ def yaml_info(yaml_tag: str = None, yaml_tag_ns: str = None) \
 
 def yaml_info_decorate(cls: 'Type[YA]', yaml_tag: str = None, yaml_tag_ns: str = None) -> 'Type[YA]':
     """
-    A simple class decorator to tag a class with yaml tag - that way no need to call YamlAble super constructor
+    A simple class decorator to tag a class with a global yaml tag - that way you do not have to call `YamlAble` super
+    constructor.
+
+    You can either provide a full yaml tag suffix:
+
+    ```python
+    @yaml_info("com.example.MyFoo")
+    class Foo(YamlAble):
+        pass
+
+    print(Foo.__yaml_tag_suffix__)  # yields "com.example.MyFoo"
+    ```
+
+    or simply provide a namespace, that will be appended with '.<class name>' :
+
+    ```python
+    @yaml_info(yaml_tag_ns="com.example")
+    class Foo(YamlAble):
+        pass
+
+    print(MyFoo.__yaml_tag_suffix__)  # yields "com.example.Foo"
+    ```
+
+    In both cases, the suffix is appended at the end of the common yamlable prefix:
+
+    ```python
+    print(Foo().dumps_yaml())  # yields "!yamlable/com.example.Foo {}"
+    ```
 
     :param cls:
-    :param yaml_tag:
-    :param yaml_tag_ns:
+    :param yaml_tag: the complete yaml suffix.
+    :param yaml_tag_ns: the yaml namespace. It will be appended with '.<cls.__name__>'
     :return:
     """
     if yaml_tag_ns is not None:
@@ -141,13 +195,19 @@ def decode_yamlable(loader, yaml_tag, node, **kwargs):
     :return:
     """
     candidates = _get_all_subclasses(YamlAble)
+    errors = dict()
     for clazz in candidates:
-        if clazz.is_yaml_tag_supported(yaml_tag):
-            constructor_args = read_yaml_node_as_dict(loader, node)
-            return clazz.from_yaml_dict(constructor_args, yaml_tag=yaml_tag)
+        try:
+            if clazz.is_yaml_tag_supported(yaml_tag):
+                constructor_args = read_yaml_node_as_dict(loader, node)
+                return clazz.from_yaml_dict(constructor_args, yaml_tag=yaml_tag)
+        except Exception as e:
+            errors[clazz.__name__] = e
 
     raise TypeError("No YamlAble subclass found able to decode object !yamlable/" + yaml_tag + ". Tried classes: "
-                    + str(candidates))
+                    + str(candidates) + ". Caught errors: " + str(errors) + ". "
+                    "Please check the value of <cls>.__yaml_tag_suffix__ on these classes. Note that this value may be "
+                    "set using @yaml_info() so help(yaml_info) might help too.")
 
 
 def encode_yamlable(dumper, obj, without_custom_tag: bool = False, **kwargs):

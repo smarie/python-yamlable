@@ -1,5 +1,6 @@
 from abc import abstractmethod, ABC
-from typing import TypeVar, Callable, Optional, Iterable, Any, Tuple
+from typing import TypeVar, Callable, Optional, Iterable, Any, Tuple, Mapping
+
 try:
     from typing import Type
 except ImportError:
@@ -339,7 +340,7 @@ class YamlCodec(ABC):
         """
 
     @classmethod
-    def decode_yamlable(cls, loader, yaml_tag_suffix, node, **kwargs):
+    def decode(cls, loader, yaml_tag_suffix, node, **kwargs):
         """
         The method used to decode object instances
 
@@ -365,12 +366,12 @@ class YamlCodec(ABC):
 
     @classmethod
     @abstractmethod
-    def create_from_yaml_dict(cls, yaml_tag_suffix: str, constructor_args, **kwargs):
+    def create_from_yaml_dict(cls, yaml_tag_suffix: str, dct, **kwargs):
         """
         Implementing classes should create an object corresponding to the given yaml tag, using the given constructor
         arguments.
 
-        :param constructor_args:
+        :param dct:
         :param yaml_tag_suffix:
         :param kwargs: keyword arguments coming from pyyaml, not sure what you will find here.
         :return:
@@ -387,7 +388,7 @@ class YamlCodec(ABC):
         """
 
     @classmethod
-    def encode_yamlable(cls, dumper, obj, without_custom_tag: bool = False, **kwargs):
+    def encode(cls, dumper, obj, without_custom_tag: bool = False, **kwargs):
         """
         The method used to encode YamlAble object instances
 
@@ -400,14 +401,19 @@ class YamlCodec(ABC):
         """
         # Convert objects to a dictionary of their representation
         yaml_tag_suffix, obj_as_dict = cls.to_yaml_dict(obj)
+        if not isinstance(obj_as_dict, Mapping) or not isinstance(yaml_tag_suffix, str):
+            raise TypeError("`to_yaml_dict` did not return correct results. It shoudl return a tuple of "
+                            "`yaml_tag_suffix, obj_as_dict`")
 
         if without_custom_tag:
             # TODO check that it works
             return dumper.represent_mapping(None, obj_as_dict, flow_style=None)
         else:
             # Add the tag information
-            # TODO make sure that there is a '/'
-            yaml_tag = cls.get_yaml_prefix() + yaml_tag_suffix
+            prefix = cls.get_yaml_prefix()
+            if len(prefix) == 0 or prefix[-1] != '/':
+                prefix = prefix + '/'
+            yaml_tag = prefix + yaml_tag_suffix
             return dumper.represent_mapping(yaml_tag, obj_as_dict, flow_style=None)
 
     @classmethod
@@ -436,8 +442,8 @@ class YamlCodec(ABC):
         :return:
         """
         for loader in loaders:
-            loader.add_multi_constructor(cls.get_yaml_prefix(), decode_yamlable)
+            loader.add_multi_constructor(cls.get_yaml_prefix(), cls.decode)
 
         for dumper in dumpers:
             for t in cls.get_known_types():
-                dumper.add_multi_representer(t, cls.encode_yamlable)
+                dumper.add_multi_representer(t, cls.encode)

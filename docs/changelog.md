@@ -1,6 +1,6 @@
 # Changelog
 
-### 0.4.0 - `YamlCodec` completed
+### 0.4.0 - `YamlCodec` completed + dunder methods
 
 `YamlCodec` completed (fixes [#4](https://github.com/smarie/python-yamlable/issues/4)):
  - `YamlCodec.decode_yamlable` renamed `decode` and `YamlCodec.encode_yamlable` renamed `encode`

@@ -13,11 +13,11 @@ def test_yamlable_incomplete_description():
     with pytest.raises(NotImplementedError) as err_info:
         class Foo(YamlAble):
             # __yaml_tag_suffix__ = 'foo'
-            def to_yaml_dict(self) -> Dict[str, Any]:
+            def __to_yaml_dict__(self) -> Dict[str, Any]:
                 return copy(vars(self))
 
             @classmethod
-            def from_yaml_dict(cls: 'Type[Y]', dct: Dict, yaml_tag: str) -> Y:
+            def __from_yaml_dict__(cls: 'Type[Y]', dct: Dict, yaml_tag: str) -> Y:
                 return Foo(**dct)
 
         # instantiate
@@ -43,11 +43,11 @@ def test_yamlable():
         def __eq__(self, other):
             return vars(self) == vars(other)
 
-        def to_yaml_dict(self) -> Dict[str, Any]:
+        def __to_yaml_dict__(self) -> Dict[str, Any]:
             return copy(vars(self))
 
         @classmethod
-        def from_yaml_dict(cls: 'Type[Y]', dct: Dict, yaml_tag: str) -> Y:
+        def __from_yaml_dict__(cls: 'Type[Y]', dct: Dict, yaml_tag: str) -> Y:
             return Foo(**dct)
 
     # instantiate
@@ -80,6 +80,68 @@ def test_yamlable():
     assert f == load(y)
 
 
+def test_yamlable_legacy_method_names():
+    """ Tests that YamlAbleMixIn works correctly """
+
+    global enc
+    global dec
+    enc, dec = False, False
+
+    @yaml_info(yaml_tag_ns='yaml.tests')
+    class FooLegacy(YamlAble):
+        # __yaml_tag_suffix__ = 'foo'   not needed: we used @yaml_info
+
+        def __init__(self, a, b):
+            self.a = a
+            self.b = b
+
+        def __eq__(self, other):
+            return vars(self) == vars(other)
+
+        def to_yaml_dict(self) -> Dict[str, Any]:
+            global enc
+            enc = True
+            return copy(vars(self))
+
+        @classmethod
+        def from_yaml_dict(cls: 'Type[Y]', dct: Dict, yaml_tag: str) -> Y:
+            global dec
+            dec = True
+            return FooLegacy(**dct)
+
+    # instantiate
+    f = FooLegacy(1, 'hello')
+
+    # dump
+    y = f.dumps_yaml()
+    assert y == "!yamlable/yaml.tests.FooLegacy {a: 1, b: hello}\n"
+
+    # dump io
+    class MemorizingStringIO(StringIO):
+        """ A StringIO object that memorizes its buffer when it is closed (as opposed to the standard StringIO) """
+        def close(self):
+            self.value = self.getvalue()
+            super(StringIO, self).close()
+    s = MemorizingStringIO()
+    f.dump_yaml(s)
+    assert s.value == y
+
+    # dump pyyaml
+    assert dump(f) == y
+
+    # load
+    assert f == FooLegacy.loads_yaml(y)
+
+    # load io
+    assert f == FooLegacy.load_yaml(StringIO(y))
+
+    # load pyyaml
+    assert f == load(y)
+
+    assert enc
+    assert dec
+
+
 # TODO override so that tag is not supported, to check error message
 def test_yamlable_not_supported():
 
@@ -94,11 +156,11 @@ def test_yamlable_not_supported():
         def __eq__(self, other):
             return vars(self) == vars(other)
 
-        def to_yaml_dict(self) -> Dict[str, Any]:
+        def __to_yaml_dict__(self) -> Dict[str, Any]:
             return copy(vars(self))
 
         @classmethod
-        def from_yaml_dict(cls: 'Type[Y]', dct: Dict, yaml_tag: str) -> Y:
+        def __from_yaml_dict__(cls: 'Type[Y]', dct: Dict, yaml_tag: str) -> Y:
             return Foo_Err(**dct)
 
         @classmethod

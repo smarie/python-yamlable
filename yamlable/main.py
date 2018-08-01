@@ -201,7 +201,7 @@ def decode_yamlable(loader, yaml_tag, node, **kwargs):
         try:
             if clazz.is_yaml_tag_supported(yaml_tag):
                 constructor_args = read_yaml_node_as_dict(loader, node)
-                return clazz.from_yaml_dict(constructor_args, yaml_tag=yaml_tag)
+                return clazz.__from_yaml_dict__(constructor_args, yaml_tag=yaml_tag)
         except Exception as e:
             errors[clazz.__name__] = e
 
@@ -223,7 +223,7 @@ def encode_yamlable(dumper, obj, without_custom_tag: bool = False, **kwargs):
     :return:
     """
     # Convert objects to a dictionary of their representation
-    new_data = obj.to_yaml_dict()
+    new_data = obj.__to_yaml_dict__()
 
     if without_custom_tag:
         # TODO check that it works
@@ -323,7 +323,7 @@ class YamlCodec(ABC):
      - Decoding:
         - fill get_yaml_prefix
         - fill is_yaml_tag_supported to declare if a given yaml tag is supported or not
-        - fill create_from_yaml_dict to create new instances of objects from a dictionary, according to the yaml tag
+        - fill from_yaml_dict to create new instances of objects from a dictionary, according to the yaml tag
      - Encoding:
         - fill get_known_types
         - fill the to_yaml_dict
@@ -352,7 +352,7 @@ class YamlCodec(ABC):
         """
         if cls.is_yaml_tag_supported(yaml_tag_suffix):
             constructor_args = read_yaml_node_as_dict(loader, node)
-            return cls.create_from_yaml_dict(yaml_tag_suffix, constructor_args, **kwargs)
+            return cls.from_yaml_dict(yaml_tag_suffix, constructor_args, **kwargs)
 
     @classmethod
     @abstractmethod
@@ -366,7 +366,7 @@ class YamlCodec(ABC):
 
     @classmethod
     @abstractmethod
-    def create_from_yaml_dict(cls, yaml_tag_suffix: str, dct, **kwargs):
+    def from_yaml_dict(cls, yaml_tag_suffix: str, dct, **kwargs):
         """
         Implementing classes should create an object corresponding to the given yaml tag, using the given constructor
         arguments.

@@ -32,7 +32,7 @@ Writing a codec is quite simple:
     - `get_known_types` to return all object types that can be encoded by this codec
     - `is_yaml_tag_supported` to return `True` if a yaml tag (suffix) is supported by this codec for decoding.
  - finally fill the encoder/decoder:
-    - `create_from_yaml_dict` to decode
+    - `from_yaml_dict` to decode
     - `to_yaml_dict` to encode
 
 The example below shows how it can be done:
@@ -73,7 +73,7 @@ class MyCodec(YamlCodec):
     # ----
 
     @classmethod
-    def create_from_yaml_dict(cls, yaml_tag_suffix: str, dct, **kwargs):
+    def from_yaml_dict(cls, yaml_tag_suffix: str, dct, **kwargs):
         # Create an object corresponding to the given tag, from the decoded dict
         typ = yaml_tags_to_types[yaml_tag_suffix]
         return typ(**dct)

@@ -44,7 +44,7 @@ def test_yamlcodec():
             return yaml_tag_suffix in yaml_tags_to_types.keys()
 
         @classmethod
-        def create_from_yaml_dict(cls, yaml_tag_suffix: str, dct, **kwargs):
+        def from_yaml_dict(cls, yaml_tag_suffix: str, dct, **kwargs):
             typ = yaml_tags_to_types[yaml_tag_suffix]
             return typ(**dct)
 

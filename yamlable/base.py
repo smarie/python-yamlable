@@ -1,7 +1,8 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 from collections import OrderedDict
 from io import TextIOBase, StringIO
 from typing import Union, TypeVar, Dict, Any
+from warnings import warn
 
 try:
     from typing import Type
@@ -17,11 +18,11 @@ class AbstractYamlObject(ABC):
     Adds convenient methods load(s)_yaml/dump(s)_yaml to any object, to call pyyaml features directly on the object or
     on the object class.
 
-    Also adds the two methods to_yaml_dict / from_yaml_dict, that are common to YamlObject2 and YamlAble.
+    Also adds the two methods __to_yaml_dict__ / __from_yaml_dict__, that are common to YamlObject2 and YamlAble.
     Default implementation uses vars(self) and cls(**dct), but subclasses can override.
     """
 
-    def to_yaml_dict(self) -> Dict[str, Any]:
+    def __to_yaml_dict__(self) -> Dict[str, Any]:
         """
         Implementors should transform the object into a dictionary containing all information necessary to decode the
         object in the future. That dictionary will be serialized as a YAML mapping.
@@ -29,10 +30,16 @@ class AbstractYamlObject(ABC):
         Default implementation returns vars(self). TODO maybe some day we'll need to rather make a copy...?
         :return:
         """
+        # Legacy compliance TODO remove in future version
+        if 'to_yaml_dict' in dir(self):
+            warn(type(self).__name__ + " still uses the legacy method name 'to_yaml_dict'. This name will not be "
+                                       "supported in future version, please use '__to_yaml_dict__' instead")
+            return self.to_yaml_dict()
+
         return vars(self)
 
     @classmethod
-    def from_yaml_dict(cls: 'Type[Y]', dct: Dict[Any, Any], yaml_tag: str) -> Y:
+    def __from_yaml_dict__(cls: 'Type[Y]', dct: Dict[Any, Any], yaml_tag: str) -> Y:
         """
         Implementors should transform the given dictionary (read from yaml by the pyYaml stack) into an object instance.
         The yaml tag associated to this object, read in the yaml document, is provided in parameter.
@@ -47,6 +54,12 @@ class AbstractYamlObject(ABC):
             against is_json_schema_id_supported)
         :return:
         """
+        # Legacy compliance TODO remove in future version
+        if 'from_yaml_dict' in dir(cls):
+            warn(cls.__name__ + " still uses the legacy method name 'from_yaml_dict'. This name will not be "
+                                "supported in future version, please use '__from_yaml_dict__' instead")
+            return cls.from_yaml_dict(dct, yaml_tag)
+
         return cls(**dct)
 
     def dump_yaml(self, file_path_or_stream: Union[str, TextIOBase], safe: bool = True, **pyyaml_kwargs):

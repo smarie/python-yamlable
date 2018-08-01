@@ -51,7 +51,7 @@ class YamlObject2(AbstractYamlObject, YAMLObject, metaclass=ABCYAMLMeta):
     A helper class to register a class as able to dump instances to yaml and to load them back from yaml.
 
     This class relies on the `YAMLObject` class provided in pyyaml, and implements the to_yaml/from_yaml methods by
-    leveraging the VarsExposer/BuildableFromVars mix-ins.
+    leveraging the AbstractYamlObject class (__to_yaml_dict__ / __from_yaml_dict__).
 
     It is basically an extension of YAMLObject
      - mapping the methods to methods in AbstractYamlObject (for consistency with YamlAble) so that you only have to
@@ -60,7 +60,7 @@ class YamlObject2(AbstractYamlObject, YAMLObject, metaclass=ABCYAMLMeta):
 
     You still have to
      - define `yaml_tag` either directly or using the @yaml_info() decorator
-     - implement both methods from AbstractYamlObject: to_yaml_dict and from_yaml_dict
+     - optionally override methods from AbstractYamlObject: __to_yaml_dict__ and __from_yaml_dict__
 
     Note: since this class extends YAMLObject, it relies on metaclass. You might therefore prefer to extend YamlAble
     instead.
@@ -79,17 +79,17 @@ class YamlObject2(AbstractYamlObject, YAMLObject, metaclass=ABCYAMLMeta):
         :param data:
         :return:
         """
-        new_data = data.to_yaml_dict()
+        new_data = data.__to_yaml_dict__()
         return dumper.represent_mapping(cls.yaml_tag, new_data, flow_style=cls.yaml_flow_style)
 
     @classmethod
     def from_yaml(cls, loader, node):
         """
-        Default implementation: loads the node as a dictionary and calls from_yaml_dict with this dictionary
+        Default implementation: loads the node as a dictionary and calls __from_yaml_dict__ with this dictionary
 
         :param loader:
         :param node:
         :return:
         """
         constructor_args = read_yaml_node_as_dict(loader, node)
-        return cls.from_yaml_dict(constructor_args, yaml_tag=cls.yaml_tag)
+        return cls.__from_yaml_dict__(constructor_args, yaml_tag=cls.yaml_tag)

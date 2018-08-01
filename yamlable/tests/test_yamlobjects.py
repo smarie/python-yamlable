@@ -29,11 +29,11 @@ def test_yamlobject_simple():
         def __eq__(self, other):
             return vars(self) == vars(other)
 
-        def to_yaml_dict(self) -> Dict[str, Any]:
+        def __to_yaml_dict__(self) -> Dict[str, Any]:
             return copy(vars(self))
 
         @classmethod
-        def from_yaml_dict(cls: 'Type[Y]', dct: Dict, yaml_tag: str) -> Y:
+        def __from_yaml_dict__(cls: 'Type[Y]', dct: Dict, yaml_tag: str) -> Y:
             return Foo(**dct)
 
     # instantiate

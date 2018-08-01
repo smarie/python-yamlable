@@ -253,9 +253,38 @@
       
     
     
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Usage details
+      </label>
+    
     <a href="./" title="Usage details" class="md-nav__link md-nav__link--active">
       Usage details
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#yamlcodec" title="YamlCodec" class="md-nav__link">
+    YamlCodec
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
     
   </li>
 
@@ -289,6 +318,22 @@
     
   
   
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#yamlcodec" title="YamlCodec" class="md-nav__link">
+    YamlCodec
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -304,7 +349,111 @@
                 
                 <h1 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h1>
 <p>You have seen in the <a href="../index">main page</a> a small example to understand the concepts. Below we present other advanced usages.</p>
-<p><strong>TODO + explain YamlCodec</strong></p>
+<h2 id="yamlcodec"><code>YamlCodec</code><a class="headerlink" href="#yamlcodec" title="Permanent link">&para;</a></h2>
+<p>Sometimes you do not have the possibility to change the classes of the objects that you wish to encode/decode. In this case the solution is to write an independent codec, inheriting from <code>YamlCodec</code>. Once again this feature leverages the <code>multi_constructor</code> and <code>multi_representer</code> concepts available in the <code>PyYaml</code> internals, but with <code>YamlCodec</code> it becomes a bit easier to do.</p>
+<p>Let's assume that the following two classes are given and can not be modified:</p>
+<div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Foo</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="n">a</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">b</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">vars</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">Bar</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="n">c</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">vars</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Writing a codec is quite simple:</p>
+<ul>
+<li>first inherit from <code>YamlCodec</code> and fill <code>get_yaml_prefix</code> so that it returns the common prefix that all yaml objects encoded/decoded by this codec will use</li>
+<li>then fill the checkers:<ul>
+<li><code>get_known_types</code> to return all object types that can be encoded by this codec</li>
+<li><code>is_yaml_tag_supported</code> to return <code>True</code> if a yaml tag (suffix) is supported by this codec for decoding.</li>
+</ul>
+</li>
+<li>finally fill the encoder/decoder:<ul>
+<li><code>from_yaml_dict</code> to decode</li>
+<li><code>to_yaml_dict</code> to encode</li>
+</ul>
+</li>
+</ul>
+<p>The example below shows how it can be done:</p>
+<div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">yamlable</span> <span class="kn">import</span> <span class="n">YamlCodec</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Tuple</span>
+
+
+<span class="c1"># the yaml tag suffixes for the two classes</span>
+<span class="n">foo_yaml</span> <span class="o">=</span> <span class="s2">&quot;yaml.tests.Foo&quot;</span>
+<span class="n">bar_yaml</span> <span class="o">=</span> <span class="s2">&quot;yaml.tests.Bar&quot;</span>
+
+<span class="c1"># 2-way mappings between the types and the yaml tags</span>
+<span class="n">types_to_yaml_tags</span> <span class="o">=</span> <span class="p">{</span><span class="n">Foo</span><span class="p">:</span> <span class="n">foo_yaml</span><span class="p">,</span>
+                      <span class="n">Bar</span><span class="p">:</span> <span class="n">bar_yaml</span><span class="p">}</span>
+<span class="n">yaml_tags_to_types</span> <span class="o">=</span> <span class="p">{</span><span class="n">foo_yaml</span><span class="p">:</span> <span class="n">Foo</span><span class="p">,</span>
+                      <span class="n">bar_yaml</span><span class="p">:</span> <span class="n">Bar</span><span class="p">}</span>
+
+<span class="k">class</span> <span class="nc">MyCodec</span><span class="p">(</span><span class="n">YamlCodec</span><span class="p">):</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_yaml_prefix</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;!mycodec/&quot;</span>  <span class="c1"># This is our root yaml tag</span>
+
+    <span class="c1"># ---- </span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_known_types</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">Any</span><span class="p">]]:</span>
+        <span class="c1"># return the list of types that we know how to encode</span>
+        <span class="k">return</span> <span class="n">types_to_yaml_tags</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">is_yaml_tag_supported</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">yaml_tag_suffix</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="c1"># return True if the given yaml tag suffix is supported</span>
+        <span class="k">return</span> <span class="n">yaml_tag_suffix</span> <span class="ow">in</span> <span class="n">yaml_tags_to_types</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+
+    <span class="c1"># ----</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_yaml_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">yaml_tag_suffix</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dct</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># Create an object corresponding to the given tag, from the decoded dict</span>
+        <span class="n">typ</span> <span class="o">=</span> <span class="n">yaml_tags_to_types</span><span class="p">[</span><span class="n">yaml_tag_suffix</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">typ</span><span class="p">(</span><span class="o">**</span><span class="n">dct</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">to_yaml_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="c1"># Encode the given object and also return the tag that it should have</span>
+        <span class="k">return</span> <span class="n">types_to_yaml_tags</span><span class="p">[</span><span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)],</span> <span class="nb">vars</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+</pre></div>
+
+
+<p>When you codec has been defined, it needs to be registerd before being usable. You can specify with which <code>PyYaml</code> Loaders/Dumpers it should be registered, or use the default (all): </p>
+<div class="codehilite"><pre><span></span><span class="c1"># register the codec</span>
+<span class="n">MyCodec</span><span class="o">.</span><span class="n">register_with_pyyaml</span><span class="p">()</span>
+</pre></div>
+
+
+<p>Finally let's test that the codec works:</p>
+<div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">yaml</span> <span class="kn">import</span> <span class="n">dump</span><span class="p">,</span> <span class="n">load</span>
+
+<span class="c1"># instantiate</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">Foo</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;hello&#39;</span><span class="p">)</span>
+<span class="n">fy</span> <span class="o">=</span> <span class="s2">&quot;!mycodec/yaml.tests.Foo {a: 1, b: hello}</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+<span class="n">b</span> <span class="o">=</span> <span class="n">Bar</span><span class="p">(</span><span class="s1">&#39;what?&#39;</span><span class="p">)</span>
+<span class="n">by</span> <span class="o">=</span> <span class="s2">&quot;!mycodec/yaml.tests.Bar {c: &#39;what?&#39;}</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+<span class="c1"># dump</span>
+<span class="k">assert</span> <span class="n">dump</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="o">==</span> <span class="n">fy</span>
+<span class="k">assert</span> <span class="n">dump</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="o">==</span> <span class="n">by</span>
+
+<span class="c1"># load</span>
+<span class="k">assert</span> <span class="n">f</span> <span class="o">==</span> <span class="n">load</span><span class="p">(</span><span class="n">fy</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">b</span> <span class="o">==</span> <span class="n">load</span><span class="p">(</span><span class="n">by</span><span class="p">)</span>
+</pre></div>
                 
                   
                 

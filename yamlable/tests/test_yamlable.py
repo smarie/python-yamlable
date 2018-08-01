@@ -1,4 +1,5 @@
 from copy import copy
+from io import StringIO
 from typing import Dict, Any
 
 import pytest
@@ -56,11 +57,24 @@ def test_yamlable():
     y = f.dumps_yaml()
     assert y == "!yamlable/yaml.tests.Foo {a: 1, b: hello}\n"
 
+    # dump io
+    class MemorizingStringIO(StringIO):
+        """ A StringIO object that memorizes its buffer when it is closed (as opposed to the standard StringIO) """
+        def close(self):
+            self.value = self.getvalue()
+            super(StringIO, self).close()
+    s = MemorizingStringIO()
+    f.dump_yaml(s)
+    assert s.value == y
+
     # dump pyyaml
     assert dump(f) == y
 
     # load
     assert f == Foo.loads_yaml(y)
+
+    # load io
+    assert f == Foo.load_yaml(StringIO(y))
 
     # load pyyaml
     assert f == load(y)

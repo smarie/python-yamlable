@@ -467,12 +467,12 @@
         <span class="sd">&quot;&quot;&quot; String representation for prints &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s2">&quot;Foo - &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">to_yaml_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__to_yaml_dict__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; This optional method is called when you call yaml.dump()&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">}</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_yaml_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dct</span><span class="p">,</span> <span class="n">yaml_tag</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__from_yaml_dict__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dct</span><span class="p">,</span> <span class="n">yaml_tag</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; This optional method is called when you call yaml.load()&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">Foo</span><span class="p">(</span><span class="n">dct</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">],</span> <span class="n">dct</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">])</span>
 </pre></div>

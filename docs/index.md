@@ -46,12 +46,12 @@ class Foo(YamlAble):
         """ String representation for prints """
         return "Foo - " + str(dict(a=self.a, b=self.b))
     
-    def to_yaml_dict(self):
+    def __to_yaml_dict__(self):
         """ This optional method is called when you call yaml.dump()"""
         return {'a': self.a, 'b': self.b}
 
     @classmethod
-    def from_yaml_dict(cls, dct, yaml_tag):
+    def __from_yaml_dict__(cls, dct, yaml_tag):
         """ This optional method is called when you call yaml.load()"""
         return Foo(dct['a'], dct['b'])
 ```

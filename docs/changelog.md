@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.5.0 - Python 2.7 support
+
+Fixes [#5](https://github.com/smarie/python-yamlable/issues/5)
+
 ### 0.4.0 - `YamlCodec` completed + dunder methods
 
 `YamlCodec` completed (fixes [#4](https://github.com/smarie/python-yamlable/issues/4)):

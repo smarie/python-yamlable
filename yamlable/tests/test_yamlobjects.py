@@ -1,9 +1,13 @@
 from copy import copy
-from typing import Dict, Any
+try:  # python 3.5+
+    from typing import Dict, Any
+    from yamlable import Y
+except ImportError:
+    pass
 
 import pytest
 
-from yamlable import YamlObject2, Y
+from yamlable import YamlObject2
 
 
 def test_yamlobject_incomplete_description():
@@ -29,11 +33,16 @@ def test_yamlobject_simple():
         def __eq__(self, other):
             return vars(self) == vars(other)
 
-        def __to_yaml_dict__(self) -> Dict[str, Any]:
+        def __to_yaml_dict__(self):
+            # type: (...) -> Dict[str, Any]
             return copy(vars(self))
 
         @classmethod
-        def __from_yaml_dict__(cls: 'Type[Y]', dct: Dict, yaml_tag: str) -> Y:
+        def __from_yaml_dict__(cls,      # type: Type[Y]
+                               dct,      # type: Dict[str, Any]
+                               yaml_tag  # type: str
+                               ):
+            # type: (...) -> Y
             return Foo(**dct)
 
     # instantiate

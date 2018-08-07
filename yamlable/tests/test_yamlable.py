@@ -1,11 +1,28 @@
 from copy import copy
-from io import StringIO
-from typing import Dict, Any
+try:
+    # Python 2 only:
+    from StringIO import StringIO
+
+    # create a variant that can serve as a context manager
+    class StringIO(StringIO):
+        def __enter__(self):
+            return self
+        def __exit__(self, exception_type, exception_value, traceback):
+            self.close()
+
+except ImportError:
+    from io import StringIO
+
+try: # python 3.5+
+    from typing import Dict, Any
+    from yamlable import Y
+except ImportError:
+    pass
 
 import pytest
 from yaml import dump, load
 
-from yamlable import YamlAble, yaml_info, Y
+from yamlable import YamlAble, yaml_info
 
 
 def test_yamlable_incomplete_description():
@@ -13,11 +30,16 @@ def test_yamlable_incomplete_description():
     with pytest.raises(NotImplementedError) as err_info:
         class Foo(YamlAble):
             # __yaml_tag_suffix__ = 'foo'
-            def __to_yaml_dict__(self) -> Dict[str, Any]:
+            def __to_yaml_dict__(self):
+                # type: (...) -> Dict[str, Any]
                 return copy(vars(self))
 
             @classmethod
-            def __from_yaml_dict__(cls: 'Type[Y]', dct: Dict, yaml_tag: str) -> Y:
+            def __from_yaml_dict__(cls,  # type: Type[Y]
+                                   dct,  # type: Dict[str, Any]
+                                   yaml_tag  # type: str
+                                   ):
+                # type: (...) -> Y
                 return Foo(**dct)
 
         # instantiate
@@ -43,15 +65,20 @@ def test_yamlable():
         def __eq__(self, other):
             return vars(self) == vars(other)
 
-        def __to_yaml_dict__(self) -> Dict[str, Any]:
+        def __to_yaml_dict__(self):
+            # type: (...) -> Dict[str, Any]
             return copy(vars(self))
 
         @classmethod
-        def __from_yaml_dict__(cls: 'Type[Y]', dct: Dict, yaml_tag: str) -> Y:
+        def __from_yaml_dict__(cls,  # type: Type[Y]
+                               dct,  # type: Dict[str, Any]
+                               yaml_tag  # type: str
+                               ):
+            # type: (...) -> Y
             return Foo(**dct)
 
     # instantiate
-    f = Foo(1, 'hello')
+    f = Foo(1, 'hello')  # note:
 
     # dump
     y = f.dumps_yaml()
@@ -62,7 +89,9 @@ def test_yamlable():
         """ A StringIO object that memorizes its buffer when it is closed (as opposed to the standard StringIO) """
         def close(self):
             self.value = self.getvalue()
-            super(StringIO, self).close()
+            # super(StringIO, self).close()  # this does not work with python 2 old-style classes (StringIO is one)
+            StringIO.close(self)
+
     s = MemorizingStringIO()
     f.dump_yaml(s)
     assert s.value == y
@@ -98,13 +127,18 @@ def test_yamlable_legacy_method_names():
         def __eq__(self, other):
             return vars(self) == vars(other)
 
-        def to_yaml_dict(self) -> Dict[str, Any]:
+        def to_yaml_dict(self):
+            # type: (...) -> Dict[str, Any]
             global enc
             enc = True
             return copy(vars(self))
 
         @classmethod
-        def from_yaml_dict(cls: 'Type[Y]', dct: Dict, yaml_tag: str) -> Y:
+        def from_yaml_dict(cls,  # type: Type[Y]
+                               dct,  # type: Dict[str, Any]
+                               yaml_tag  # type: str
+                               ):
+            # type: (...) -> Y
             global dec
             dec = True
             return FooLegacy(**dct)
@@ -121,7 +155,9 @@ def test_yamlable_legacy_method_names():
         """ A StringIO object that memorizes its buffer when it is closed (as opposed to the standard StringIO) """
         def close(self):
             self.value = self.getvalue()
-            super(StringIO, self).close()
+            # super(StringIO, self).close()  # this does not work with python 2 old-style classes (StringIO is one)
+            StringIO.close(self)
+
     s = MemorizingStringIO()
     f.dump_yaml(s)
     assert s.value == y
@@ -156,15 +192,23 @@ def test_yamlable_not_supported():
         def __eq__(self, other):
             return vars(self) == vars(other)
 
-        def __to_yaml_dict__(self) -> Dict[str, Any]:
+        def __to_yaml_dict__(self):
+            # type: (...) -> Dict[str, Any]
             return copy(vars(self))
 
         @classmethod
-        def __from_yaml_dict__(cls: 'Type[Y]', dct: Dict, yaml_tag: str) -> Y:
+        def __from_yaml_dict__(cls,  # type: Type[Y]
+                               dct,  # type: Dict[str, Any]
+                               yaml_tag  # type: str
+                               ):
+            # type: (...) -> Y
             return Foo_Err(**dct)
 
         @classmethod
-        def is_yaml_tag_supported(cls, yaml_tag: str):
+        def is_yaml_tag_supported(cls,
+                                  yaml_tag  # type: str
+                                  ):
+            # type: (...) -> bool
             # ALWAYS return false
             return False
 

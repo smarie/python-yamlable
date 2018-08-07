@@ -1,12 +1,21 @@
-from abc import abstractmethod, ABC
-from typing import TypeVar, Callable, Optional, Iterable, Any, Tuple, Mapping
+import collections
+from abc import abstractmethod, ABCMeta
 
-try:
+import six
+
+try:  # python 3.5+
+    from typing import TypeVar, Callable, Optional, Iterable, Any, Tuple, Mapping, Any, Dict
+    YA = TypeVar('YA', bound='YamlAble')
+    T = TypeVar('T')
+except ImportError:
+    pass
+
+try:  # python 3.5.4+
     from typing import Type
 except ImportError:
     pass # normal for old versions of typing
 
-from yaml import Loader, SafeLoader, Dumper, SafeDumper
+from yaml import Loader, SafeLoader, Dumper, SafeDumper, MappingNode
 
 from yamlable.base import AbstractYamlObject, NONE_IGNORE_CHECKS, read_yaml_node_as_dict
 from yamlable.yaml_objects import YamlObject2
@@ -23,7 +32,10 @@ class AbstractYamlAble(AbstractYamlObject):
 
     @classmethod
     @abstractmethod
-    def is_yaml_tag_supported(cls, yaml_tag: str) -> bool:
+    def is_yaml_tag_supported(cls,
+                              yaml_tag  # type: str
+                              ):
+        # type: (...) -> bool
         """
         Implementing classes should return True if they are able to decode yaml objects with this tag.
         Note that the associated yaml object tag will be
@@ -33,9 +45,6 @@ class AbstractYamlAble(AbstractYamlObject):
         :param yaml_tag:
         :return:
         """
-
-
-YA = TypeVar('YA', bound='YamlAble')
 
 
 class YamlAble(AbstractYamlAble):
@@ -51,13 +60,18 @@ class YamlAble(AbstractYamlAble):
     __yaml_tag_suffix__ = None
     """ placeholder for a class-wide yaml tag. It will be prefixed with '!yamlable/', stored in `YAMLABLE_PREFIX` """
 
-    def __init__(self, *args, yaml_tag: str = None, **kwargs):
+    def __init__(self,  *args,
+                 # yaml_tag=None,  # type: str  Not supported in python 2
+                 **kwargs):
         """
         Constructor to create an object with the given yaml tag.
         The tag is optional so that class-wide attribute is used when None is provided
 
         :param yaml_tag:
         """
+        # python 2 compatibility: no keyword arguments can follow an *args.
+        yaml_tag = kwargs.pop('yaml_tag', None)
+
         if yaml_tag is not None:
             # hide class-wide attribute with an instance-specific one
             self.__yaml_tag_suffix__ = yaml_tag
@@ -66,7 +80,10 @@ class YamlAble(AbstractYamlAble):
         super(YamlAble, self).__init__(*args, **kwargs)
 
     @classmethod
-    def is_yaml_tag_supported(cls, yaml_tag: str) -> bool:
+    def is_yaml_tag_supported(cls,
+                              yaml_tag  # type: str
+                              ):
+        # type: (...) -> bool
         """
         Implementing classes should return True if they are able to decode yaml objects with this yaml tag.
         Default implementation relies on class attribute `__yaml_tag_suffix__` if provided, either manually or through
@@ -84,8 +101,10 @@ class YamlAble(AbstractYamlAble):
                                       "from YamlAble".format(cls))
 
 
-def yaml_info(yaml_tag: str = None, yaml_tag_ns: str = None) \
-        -> Callable[['Type[YA]', Optional[str], Optional[str]], 'Type[YA]']:
+def yaml_info(yaml_tag=None,     # type: str
+              yaml_tag_ns=None   # type: str
+              ):
+    # type: (...) -> Callable[[Type[YA], Optional[str], Optional[str]], Type[YA]]
     """
     A simple class decorator to tag a class with a global yaml tag - that way you do not have to call `YamlAble` super
     constructor.
@@ -125,7 +144,11 @@ def yaml_info(yaml_tag: str = None, yaml_tag_ns: str = None) \
     return f
 
 
-def yaml_info_decorate(cls: 'Type[YA]', yaml_tag: str = None, yaml_tag_ns: str = None) -> 'Type[YA]':
+def yaml_info_decorate(cls,               # type: Type[YA]
+                       yaml_tag=None,     # type: str
+                       yaml_tag_ns=None   # type: str
+                       ):
+    # type: (...) -> Type[YA]
     """
     A simple class decorator to tag a class with a global yaml tag - that way you do not have to call `YamlAble` super
     constructor.
@@ -185,7 +208,11 @@ def yaml_info_decorate(cls: 'Type[YA]', yaml_tag: str = None, yaml_tag_ns: str =
 
 
 # --------------------------------------Codecs-----------------------------------------------------------
-def decode_yamlable(loader, yaml_tag, node, **kwargs):
+def decode_yamlable(loader,
+                    yaml_tag,  # type: str
+                    node,      # type: MappingNode
+                    **kwargs):
+    # type: (...) -> YamlAble
     """
     The method used to decode YamlAble object instances
 
@@ -211,7 +238,11 @@ def decode_yamlable(loader, yaml_tag, node, **kwargs):
                     "set using @yaml_info() so help(yaml_info) might help too.")
 
 
-def encode_yamlable(dumper, obj, without_custom_tag: bool = False, **kwargs):
+def encode_yamlable(dumper,
+                    obj,                       # type: YamlAble
+                    without_custom_tag=False,  # type: bool
+                    **kwargs):
+    # type: (...) -> MappingNode
     """
     The method used to encode YamlAble object instances
 
@@ -238,7 +269,8 @@ def encode_yamlable(dumper, obj, without_custom_tag: bool = False, **kwargs):
         return dumper.represent_mapping(yaml_tag, new_data, flow_style=None)
 
 
-def register_yamlable_codec(loaders={Loader, SafeLoader}, dumpers={Dumper, SafeDumper}):
+def register_yamlable_codec(loaders=(Loader, SafeLoader), dumpers=(Dumper, SafeDumper)):
+    # type: (...) -> None
     """
     Registers the yamlable encoder and decoder with all pyYaml loaders and dumpers.
 
@@ -257,10 +289,11 @@ def register_yamlable_codec(loaders={Loader, SafeLoader}, dumpers={Dumper, SafeD
 register_yamlable_codec()
 
 
-T = TypeVar('T')
-
-
-def _get_all_subclasses(typ: 'Type[T]', recursive: bool = True, _memo=None) -> Iterable['Type[T]']:
+def _get_all_subclasses(typ,             # type: Type[T]
+                        recursive=True,  # type: bool
+                        _memo=None       # type: Set[Type[Any]]
+                        ):
+    # type: (...) -> Iterable[Type[T]]
     """
     Returns all subclasses of `typ`
     Warning this does not support generic types.
@@ -312,7 +345,7 @@ def _get_all_subclasses(typ: 'Type[T]', recursive: bool = True, _memo=None) -> I
 
 
 # ------------------------ Easy codecs ---------------
-class YamlCodec(ABC):
+class YamlCodec(six.with_metaclass(ABCMeta, object)):
     """
     Represents a codec class, able to encode several object types into/from yaml, with potentially different yaml tag
     ids. It assumes that the objects are written as yaml dictionaries, and that they all have the same yaml tag prefix
@@ -334,13 +367,18 @@ class YamlCodec(ABC):
     @classmethod
     @abstractmethod
     def get_yaml_prefix(cls):
+        # type: (...) -> str
         """
         Implementors should return the yaml prefix associated tto this codec.
         :return:
         """
 
     @classmethod
-    def decode(cls, loader, yaml_tag_suffix, node, **kwargs):
+    def decode(cls, loader,
+               yaml_tag_suffix,  # type: str
+               node,             # type: MappingNode
+               **kwargs):
+        # type: (...) -> Any
         """
         The method used to decode object instances
 
@@ -356,7 +394,10 @@ class YamlCodec(ABC):
 
     @classmethod
     @abstractmethod
-    def is_yaml_tag_supported(cls, yaml_tag_suffix: str) -> bool:
+    def is_yaml_tag_supported(cls,
+                              yaml_tag_suffix  # type: str
+                              ):
+        # type: (...) -> bool
         """
         Implementing classes should return True if they are able to decode yaml objects with this yaml tag.
 
@@ -366,7 +407,11 @@ class YamlCodec(ABC):
 
     @classmethod
     @abstractmethod
-    def from_yaml_dict(cls, yaml_tag_suffix: str, dct, **kwargs):
+    def from_yaml_dict(cls,
+                       yaml_tag_suffix,  # type: str
+                       dct,              # type: Dict[str, Any]
+                       **kwargs):
+        # type: (...) -> Any
         """
         Implementing classes should create an object corresponding to the given yaml tag, using the given constructor
         arguments.
@@ -381,14 +426,18 @@ class YamlCodec(ABC):
 
     @classmethod
     @abstractmethod
-    def get_known_types(cls) -> Iterable['Type[Any]']:
+    def get_known_types(cls):
+        # type: (...) -> Iterable[Type[Any]]
         """
         Implementing classes should return an iterable of known object types.
         :return:
         """
 
     @classmethod
-    def encode(cls, dumper, obj, without_custom_tag: bool = False, **kwargs):
+    def encode(cls, dumper, obj,
+               without_custom_tag=False,  # type: bool
+               **kwargs):
+        # type: (...) -> MappingNode
         """
         The method used to encode YamlAble object instances
 
@@ -401,8 +450,8 @@ class YamlCodec(ABC):
         """
         # Convert objects to a dictionary of their representation
         yaml_tag_suffix, obj_as_dict = cls.to_yaml_dict(obj)
-        if not isinstance(obj_as_dict, Mapping) or not isinstance(yaml_tag_suffix, str):
-            raise TypeError("`to_yaml_dict` did not return correct results. It shoudl return a tuple of "
+        if not isinstance(obj_as_dict, collections.Mapping) or not isinstance(yaml_tag_suffix, str):
+            raise TypeError("`to_yaml_dict` did not return correct results. It should return a tuple of "
                             "`yaml_tag_suffix, obj_as_dict`")
 
         if without_custom_tag:
@@ -418,7 +467,8 @@ class YamlCodec(ABC):
 
     @classmethod
     @abstractmethod
-    def to_yaml_dict(cls, obj) -> Tuple[str, Any]:
+    def to_yaml_dict(cls, obj):
+        # type: (...) -> Tuple[str, Dict[str, Any]]
         """
         Implementors should encode the given object as a dictionary and also return the yaml tag that should be used to
         ensure correct decoding.
@@ -430,6 +480,7 @@ class YamlCodec(ABC):
 
     @classmethod
     def register_with_pyyaml(cls, loaders={Loader, SafeLoader}, dumpers={Dumper, SafeDumper}):
+        # type: (...) -> None
         """
         Registers this codec with PyYaml, on the provided loaders and dumpers (default: all PyYaml loaders and dumpers).
          - The encoding part is registered for the object types listed in cls.get_known_types(), in order

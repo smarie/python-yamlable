@@ -1,19 +1,40 @@
-from abc import ABC
+from abc import ABCMeta
 from collections import OrderedDict
-from io import TextIOBase, StringIO
-from typing import Union, TypeVar, Dict, Any
-from warnings import warn
 
 try:
+    # Python 2 only:
+    from StringIO import StringIO
+
+    # create a variant that can serve as a context manager
+    class StringIO(StringIO):
+        def __enter__(self):
+            return self
+        def __exit__(self, exception_type, exception_value, traceback):
+            self.close()
+
+except ImportError:
+    # (IOBase is only used in type hints)
+    from io import IOBase, StringIO
+
+from warnings import warn
+
+import six
+
+try:  # python 3.5+
+    from typing import Union, TypeVar, Dict, Any
+
+    Y = TypeVar('Y', bound='AbstractYamlObject')
+
+except ImportError:
+    pass
+
+try:  # python 3.5.4+
     from typing import Type
 except ImportError:
     pass # normal for old versions of typing
 
 
-Y = TypeVar('Y', bound='AbstractYamlObject')
-
-
-class AbstractYamlObject(ABC):
+class AbstractYamlObject(six.with_metaclass(ABCMeta, object)):
     """
     Adds convenient methods load(s)_yaml/dump(s)_yaml to any object, to call pyyaml features directly on the object or
     on the object class.
@@ -22,7 +43,8 @@ class AbstractYamlObject(ABC):
     Default implementation uses vars(self) and cls(**dct), but subclasses can override.
     """
 
-    def __to_yaml_dict__(self) -> Dict[str, Any]:
+    def __to_yaml_dict__(self):
+        # type: (...) -> Dict[str, Any]
         """
         Implementors should transform the object into a dictionary containing all information necessary to decode the
         object in the future. That dictionary will be serialized as a YAML mapping.
@@ -30,16 +52,21 @@ class AbstractYamlObject(ABC):
         Default implementation returns vars(self). TODO maybe some day we'll need to rather make a copy...?
         :return:
         """
-        # Legacy compliance TODO remove in future version
+        # Legacy compliance with old 'not dunder' method name TODO remove in future version
         if 'to_yaml_dict' in dir(self):
             warn(type(self).__name__ + " still uses the legacy method name 'to_yaml_dict'. This name will not be "
                                        "supported in future version, please use '__to_yaml_dict__' instead")
             return self.to_yaml_dict()
 
+        # Default: return vars
         return vars(self)
 
     @classmethod
-    def __from_yaml_dict__(cls: 'Type[Y]', dct: Dict[Any, Any], yaml_tag: str) -> Y:
+    def __from_yaml_dict__(cls,      # type: Type[Y]
+                           dct,      # type: Dict[str, Any]
+                           yaml_tag  # type: str
+                           ):
+        # type: (...) -> Y
         """
         Implementors should transform the given dictionary (read from yaml by the pyYaml stack) into an object instance.
         The yaml tag associated to this object, read in the yaml document, is provided in parameter.
@@ -54,15 +81,21 @@ class AbstractYamlObject(ABC):
             against is_json_schema_id_supported)
         :return:
         """
-        # Legacy compliance TODO remove in future version
+        # Legacy compliance with old 'not dunder' method name TODO remove in future version
         if 'from_yaml_dict' in dir(cls):
             warn(cls.__name__ + " still uses the legacy method name 'from_yaml_dict'. This name will not be "
                                 "supported in future version, please use '__from_yaml_dict__' instead")
             return cls.from_yaml_dict(dct, yaml_tag)
 
+        # Default: call constructor with all keyword arguments
         return cls(**dct)
 
-    def dump_yaml(self, file_path_or_stream: Union[str, TextIOBase], safe: bool = True, **pyyaml_kwargs):
+    def dump_yaml(self,
+                  file_path_or_stream,  # type: Union[str, IOBase, StrinIO]
+                  safe=True,            # type: bool
+                  **pyyaml_kwargs       # type: Dict[str, Any]
+                  ):
+        # type: (...) -> None
         """
         Dumps this object to a yaml file or stream using pyYaml.
 
@@ -85,7 +118,11 @@ class AbstractYamlObject(ABC):
                 else:
                     dump(self, f, **pyyaml_kwargs)
 
-    def dumps_yaml(self, safe: bool = True, **pyyaml_kwargs):
+    def dumps_yaml(self,
+                   safe=True,       # type: bool
+                   **pyyaml_kwargs  # type: Dict[str, Any]
+                   ):
+        # type: (...) -> str
         """
         Dumps this object to a yaml string and returns it.
 
@@ -100,7 +137,11 @@ class AbstractYamlObject(ABC):
             return dump(self, **pyyaml_kwargs)
 
     @classmethod
-    def loads_yaml(cls: 'Type[Y]', yaml_str: str, safe: bool=True) -> Y:
+    def loads_yaml(cls,          # type: Type[Y]
+                   yaml_str,     # type: str
+                   safe=True     # type: bool
+                   ):
+        # type: (...) -> Y
         """
         Utility method to load an instance of this class from the provided yaml string. This methods only returns
         successfully if the result is an instance of `cls`.
@@ -112,7 +153,11 @@ class AbstractYamlObject(ABC):
         return cls.load_yaml(StringIO(yaml_str), safe=safe)
 
     @classmethod
-    def load_yaml(cls: 'Type[Y]', file_path_or_stream: Union[str, TextIOBase], safe: bool=True) -> Y:
+    def load_yaml(cls,                  # type: Type[Y]
+                  file_path_or_stream,  # type: Union[str, IOBase, StringIO]
+                  safe=True             # type: bool
+                  ):
+        # type: (...) -> Y
         """
         Parses the given file path or stream as a yaml document. This methods only returns successfully if the result
         is an instance of `cls`.

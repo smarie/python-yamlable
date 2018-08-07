@@ -1,22 +1,29 @@
 from abc import ABCMeta
-from typing import TypeVar
-try:
+
+import six
+
+try:  # python 3.5+
+    from typing import TypeVar
+
+    YO2 = TypeVar('YO2', bound='YamlObject2')
+except ImportError:
+    pass
+try:  # python 3.5.4+
     from typing import Type
 except ImportError:
     pass # normal for old versions of typing
-from yaml import YAMLObjectMetaclass, YAMLObject, SafeLoader
+
+from yaml import YAMLObjectMetaclass, YAMLObject, SafeLoader, MappingNode
 
 from yamlable.base import NONE_IGNORE_CHECKS, AbstractYamlObject, read_yaml_node_as_dict
-
-
-YO2 = TypeVar('YO2', bound='YamlObject2')
 
 
 class YAMLObjectMetaclassStrict(YAMLObjectMetaclass):
     """
     Improved metaclass for YAMLObject, that raises an error if yaml_tag is not defined
     """
-    def __init__(cls: 'Type[YO2]', name, bases, kwds):
+    def __init__(cls,   # type: Type[YO2]
+                 name, bases, kwds):
 
         # construct as usual
         super(YAMLObjectMetaclass, cls).__init__(name, bases, kwds)
@@ -46,7 +53,7 @@ class ABCYAMLMeta(YAMLObjectMetaclassStrict, ABCMeta):
     pass
 
 
-class YamlObject2(AbstractYamlObject, YAMLObject, metaclass=ABCYAMLMeta):
+class YamlObject2(six.with_metaclass(ABCYAMLMeta, AbstractYamlObject, YAMLObject)):
     """
     A helper class to register a class as able to dump instances to yaml and to load them back from yaml.
 
@@ -71,7 +78,11 @@ class YamlObject2(AbstractYamlObject, YAMLObject, metaclass=ABCYAMLMeta):
     # yaml_flow_style = ...
 
     @classmethod
-    def to_yaml(cls, dumper, data: AbstractYamlObject):
+    def to_yaml(cls,    # type: Type[YamlObject2]
+                dumper,
+                data    # type: AbstractYamlObject
+                ):
+        # type: (...) -> MappingNode
         """
         Default implementation: relies on AbstractYamlObject API to serialize all public variables
 
@@ -83,7 +94,11 @@ class YamlObject2(AbstractYamlObject, YAMLObject, metaclass=ABCYAMLMeta):
         return dumper.represent_mapping(cls.yaml_tag, new_data, flow_style=cls.yaml_flow_style)
 
     @classmethod
-    def from_yaml(cls, loader, node):
+    def from_yaml(cls,   # type: Type[YamlObject2]
+                  loader,
+                  node   # type: MappingNode
+                  ):
+        # type: (...) -> YamlObject2
         """
         Default implementation: loads the node as a dictionary and calls __from_yaml_dict__ with this dictionary
 

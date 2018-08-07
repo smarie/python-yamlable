@@ -1,4 +1,7 @@
-from typing import Tuple, Any, Iterable
+try:  # python 3.5+
+    from typing import Tuple, Any, Iterable, Dict
+except ImportError:
+    pass
 
 from yaml import dump, load
 
@@ -8,7 +11,7 @@ from yamlable import YamlCodec
 def test_yamlcodec():
     """ Tests that custom yaml codec work """
 
-    class Foo:
+    class Foo(object):
         def __init__(self, a, b):
             self.a = a
             self.b = b
@@ -16,7 +19,7 @@ def test_yamlcodec():
         def __eq__(self, other):
             return vars(self) == vars(other)
 
-    class Bar:
+    class Bar(object):
         def __init__(self, c):
             self.c = c
 
@@ -36,20 +39,29 @@ def test_yamlcodec():
             return "!mycodec/"
 
         @classmethod
-        def get_known_types(cls) -> Iterable['Type[Any]']:
+        def get_known_types(cls):
+            # type: (...) -> Iterable[Type[Any]]
             return types_to_yaml_tags.keys()
 
         @classmethod
-        def is_yaml_tag_supported(cls, yaml_tag_suffix: str) -> bool:
+        def is_yaml_tag_supported(cls,
+                                  yaml_tag_suffix  # type: str
+                                  ):
+            # type: (...) -> bool
             return yaml_tag_suffix in yaml_tags_to_types.keys()
 
         @classmethod
-        def from_yaml_dict(cls, yaml_tag_suffix: str, dct, **kwargs):
+        def from_yaml_dict(cls,
+                           yaml_tag_suffix,  # type: str
+                           dct,              # type: Dict[str, Any]
+                           **kwargs):
+            # type: (...) -> Any
             typ = yaml_tags_to_types[yaml_tag_suffix]
             return typ(**dct)
 
         @classmethod
-        def to_yaml_dict(cls, obj) -> Tuple[str, Any]:
+        def to_yaml_dict(cls, obj):
+            # type: (...) -> Tuple[str, Any]
             return types_to_yaml_tags[type(obj)], vars(obj)
 
     # register the codec

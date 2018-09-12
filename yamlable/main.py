@@ -60,25 +60,6 @@ class YamlAble(AbstractYamlAble):
     __yaml_tag_suffix__ = None
     """ placeholder for a class-wide yaml tag. It will be prefixed with '!yamlable/', stored in `YAMLABLE_PREFIX` """
 
-    def __init__(self,  *args,
-                 # yaml_tag=None,  # type: str  Not supported in python 2
-                 **kwargs):
-        """
-        Constructor to create an object with the given yaml tag.
-        The tag is optional so that class-wide attribute is used when None is provided
-
-        :param yaml_tag:
-        """
-        # python 2 compatibility: no keyword arguments can follow an *args.
-        yaml_tag = kwargs.pop('yaml_tag', None)
-
-        if yaml_tag is not None:
-            # hide class-wide attribute with an instance-specific one
-            self.__yaml_tag_suffix__ = yaml_tag
-
-        # multiple-inheritance friendly: propagate to other constructors
-        super(YamlAble, self).__init__(*args, **kwargs)
-
     @classmethod
     def is_yaml_tag_supported(cls,
                               yaml_tag  # type: str

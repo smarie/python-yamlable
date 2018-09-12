@@ -1,5 +1,10 @@
 # Changelog
 
+### 0.7.0 - Abstract class definition and checks have been simplified
+
+It should now be easier to define an abstract yaml-able class for several object types.
+Deprecated `NONE_IGNORE_CHECKS`. Fixes [#7](https://github.com/smarie/python-yamlable/issues/7)
+
 ### 0.6.0 - `YamlAble` does not provide a constructor anymore
 
 Fixes [#6](https://github.com/smarie/python-yamlable/issues/6).

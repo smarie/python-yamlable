@@ -449,7 +449,7 @@
 <ul>
 <li>inherit from <code>YamlAble</code></li>
 <li>decorate it with the <code>@yaml_info</code> annotation to declare the associated yaml tag</li>
-<li><em>optionally</em> implement <code>from_yaml_dict</code> (class method called during decoding) and/or <code>to_yaml_dict</code> (instance method called during encoding) if we wish to have control on the process, for example to only dump part of the attributes or perform some custom instance creation. Note that default implementation relies on <code>vars(self)</code> for dumping and on <code>cls(**dct)</code> for loading.</li>
+<li><em>optionally</em> implement <code>__from_yaml_dict__</code> (class method called during decoding) and/or <code>__to_yaml_dict__</code> (instance method called during encoding) if we wish to have control on the process, for example to only dump part of the attributes or perform some custom instance creation. Note that default implementation relies on <code>vars(self)</code> for dumping and on <code>cls(**dct)</code> for loading.</li>
 </ul>
 <div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">yamlable</span> <span class="kn">import</span> <span class="n">yaml_info</span><span class="p">,</span> <span class="n">YamlAble</span>
 

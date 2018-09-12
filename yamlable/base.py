@@ -107,7 +107,7 @@ class AbstractYamlObject(six.with_metaclass(ABCMeta, object)):
         """
         from yaml import safe_dump, dump
         if isinstance(file_path_or_stream, str):
-            with open(file_path_or_stream, mode='wt') as f:
+            with open(file_path_or_stream, mode='w+t') as f:
                 if safe:
                     safe_dump(self, f, **pyyaml_kwargs)
                 else:

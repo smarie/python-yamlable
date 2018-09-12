@@ -9,6 +9,7 @@ try:
     class StringIO(StringIO):
         def __enter__(self):
             return self
+
         def __exit__(self, exception_type, exception_value, traceback):
             self.close()
 

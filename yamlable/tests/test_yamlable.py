@@ -52,7 +52,7 @@ def test_yamlable_incomplete_description():
 
 
 def test_yamlable():
-    """ Tests that YamlAbleMixIn works correctly """
+    """ Tests that YamlAble works correctly """
 
     @yaml_info(yaml_tag_ns='yaml.tests')
     class Foo(YamlAble):
@@ -250,3 +250,77 @@ def test_help_yaml_info():
 
     assert Foo().dumps_yaml() == """!yamlable/com.example.Foo {}
 """
+
+
+def test_abstract_parent_error():
+    """This tests that we can define an abstract parent class with the YamlAble behaviour and inherit it"""
+
+    class AbstractFooE(YamlAble):
+        pass
+
+    class FooError(AbstractFooE):
+        """
+        This class inherits from the parent without redefining a yaml tag
+        """
+        def __init__(self, a, b):
+            self.a = a
+            self.b = b
+
+        def __eq__(self, other):
+            return vars(self) == vars(other)
+
+    # instantiate
+    e = FooError(1, 'hello')
+
+    # dump
+    with pytest.raises(NotImplementedError):
+        e.dumps_yaml()
+
+
+def test_abstract_parent():
+    """This tests that we can define an abstract parent class with the YamlAble behaviour and inherit it"""
+
+    class AbstractFooV(YamlAble):
+        pass
+
+    @yaml_info(yaml_tag_ns='yaml.tests')
+    class FooValid(AbstractFooV):
+
+        def __init__(self, a, b):
+            self.a = a
+            self.b = b
+
+        def __eq__(self, other):
+            return vars(self) == vars(other)
+
+    # instantiate
+    f = FooValid(1, 'hello')  # note:
+
+    # dump
+    y = f.dumps_yaml()
+    assert y == "!yamlable/yaml.tests.FooValid {a: 1, b: hello}\n"
+
+    # dump io
+    class MemorizingStringIO(StringIO):
+        """ A StringIO object that memorizes its buffer when it is closed (as opposed to the standard StringIO) """
+
+        def close(self):
+            self.value = self.getvalue()
+            # super(StringIO, self).close()  # this does not work with python 2 old-style classes (StringIO is one)
+            StringIO.close(self)
+
+    s = MemorizingStringIO()
+    f.dump_yaml(s)
+    assert s.value == y
+
+    # dump pyyaml
+    assert dump(f) == y
+
+    # load
+    assert f == FooValid.loads_yaml(y)
+
+    # load io
+    assert f == FooValid.load_yaml(StringIO(y))
+
+    # load pyyaml
+    assert f == load(y)

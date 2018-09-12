@@ -17,7 +17,7 @@ except ImportError:
 
 from yaml import Loader, SafeLoader, Dumper, SafeDumper, MappingNode
 
-from yamlable.base import AbstractYamlObject, NONE_IGNORE_CHECKS, read_yaml_node_as_dict
+from yamlable.base import AbstractYamlObject, read_yaml_node_as_dict
 from yamlable.yaml_objects import YamlObject2
 
 
@@ -79,12 +79,19 @@ class YamlAble(AbstractYamlAble):
         :return:
         """
         if hasattr(cls, '__yaml_tag_suffix__') and cls.__yaml_tag_suffix__ is not None:
-            return cls.__yaml_tag_suffix__ == yaml_tag and cls.__yaml_tag_suffix__ is not NONE_IGNORE_CHECKS
+            if '__yaml_tag_suffix__' in cls.__dict__:
+                # this is an explicitly configured class (__yaml_tag_suffix__ is set on it), ok
+                return cls.__yaml_tag_suffix__ == yaml_tag
+            else:
+                # this class inherits from the __yaml_tag_suffix__ and does not redefine it, not ok
+                raise TypeError("`__yaml_tag_suffix__` field is not redefined by class {}, cannot inherit from YamlAble"
+                                "properly.".format(cls))
+
         else:
             raise NotImplementedError("class {} does not seem to have a non-None '__yaml_tag_suffix__' field. You can "
                                       "either create one manually or by decorating your class with @yaml_info. "
-                                      "Alternately you should override the 'is_yaml_tag_supported' abstract method "
-                                      "from YamlAble".format(cls))
+                                      "Alternately you should override the 'is_yaml_tag_supported' method "
+                                      "from YamlAble.".format(cls))
 
 
 def yaml_info(yaml_tag=None,     # type: str
@@ -247,7 +254,7 @@ def encode_yamlable(dumper,
         return dumper.represent_mapping(None, new_data, flow_style=None)
     else:
         # Add the tag information
-        if not hasattr(obj, '__yaml_tag_suffix__') or obj.__yaml_tag_suffix__ in {None, NONE_IGNORE_CHECKS}:
+        if not hasattr(obj, '__yaml_tag_suffix__') or obj.__yaml_tag_suffix__ is None:
             raise NotImplementedError("object {} does not seem to have a non-None '__yaml_tag_suffix__' field. You "
                                       "can either create one manually or by decorating your class with @yaml_info."
                                       "".format(obj))

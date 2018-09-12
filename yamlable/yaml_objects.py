@@ -15,7 +15,7 @@ except ImportError:
 
 from yaml import YAMLObjectMetaclass, YAMLObject, SafeLoader, MappingNode
 
-from yamlable.base import NONE_IGNORE_CHECKS, AbstractYamlObject, read_yaml_node_as_dict
+from yamlable.base import AbstractYamlObject, read_yaml_node_as_dict
 
 
 class YAMLObjectMetaclassStrict(YAMLObjectMetaclass):
@@ -29,18 +29,19 @@ class YAMLObjectMetaclassStrict(YAMLObjectMetaclass):
         super(YAMLObjectMetaclass, cls).__init__(name, bases, kwds)
 
         # if yaml_tag is provided
-        if 'yaml_tag' in kwds and kwds['yaml_tag'] is not None:
-            if cls.yaml_tag != NONE_IGNORE_CHECKS:
+        if 'yaml_tag' in kwds:
+            # if cls.yaml_tag != NONE_IGNORE_CHECKS:
+            if kwds['yaml_tag'] is not None:
                 cls.yaml_loader.add_constructor(cls.yaml_tag, cls.from_yaml)
                 cls.yaml_dumper.add_representer(cls, cls.to_yaml)
             else:
                 if 'yaml_tag' in cls.__dict__:
-                    # this is an explicitly disabled class (yaml_tag=NONE_IGNORE_CHECK is set on it), ok
+                    # this is an explicitly disabled class (yaml_tag=None is set on it), ok
                     pass
                 else:
-                    # this class inherits from the yaml_tag=NONE_IGNORE_CHECK and does not redefine it, not ok
+                    # this class inherits from the yaml_tag=None and does not redefine it, not ok
                     raise TypeError("`yaml_tag` field is not redefined by class {}, cannot inherit from YAMLObject "
-                                    "properly. Note that abstract classes can use the tag NONE_IGNORE_CHECKS to skip "
+                                    "properly. Note that abstract classes can set the tag explicitly to `None` to skip "
                                     "this check. It won't disable the check for their subclasses".format(cls))
 
         else:
@@ -74,7 +75,7 @@ class YamlObject2(six.with_metaclass(ABCYAMLMeta, AbstractYamlObject, YAMLObject
     """
     yaml_loader = SafeLoader  # explicitly use SafeLoader by default
     # yaml_dumper = Dumper
-    yaml_tag = NONE_IGNORE_CHECKS
+    yaml_tag = None
     # yaml_flow_style = ...
 
     @classmethod

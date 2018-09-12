@@ -189,8 +189,9 @@ class AbstractYamlObject(six.with_metaclass(ABCMeta, object)):
                             "".format(cls.__name__, type(res).__name__))
 
 
-NONE_IGNORE_CHECKS = object()
-""" A tag to be used as yaml tag for abstract classes, to indicate that they are abstract (checks disabled) """
+NONE_IGNORE_CHECKS = None
+# """Tag to be used as yaml tag for abstract classes, to indicate that
+# they are abstract (checks disabled). Not used anymore, kept for legacy reasons"""
 
 
 def read_yaml_node_as_dict(loader, node):

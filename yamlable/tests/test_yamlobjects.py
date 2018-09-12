@@ -55,3 +55,58 @@ def test_yamlobject_simple():
     # load from yaml
     g = Foo.loads_yaml(o)
     assert f == g
+
+
+def test_abstract_parent_error():
+    """This tests that we can define an abstract parent class with the YamlAble behaviour and inherit it"""
+
+    with pytest.raises(TypeError):
+        class AbstractFooE(YamlObject2):
+            pass
+
+        # class FooError(AbstractFooE):
+        #     """
+        #     This class inherits from the parent without redefining a yaml tag
+        #     """
+        #     def __init__(self, a, b):
+        #         self.a = a
+        #         self.b = b
+        #
+        #     def __eq__(self, other):
+        #         return vars(self) == vars(other)
+        #
+        # # instantiate
+        # e = FooError(1, 'hello')
+        #
+        # # dump
+        # with pytest.raises(NotImplementedError):
+        #     e.dumps_yaml()
+
+
+def test_abstract_parent():
+    """This tests that we can define an abstract parent class with the YamlAble behaviour and inherit it"""
+
+    class AbstractFooV(YamlObject2):
+        # With YamlObject2 as opposed to YamlAble, we have to explicitly disable the yaml_tag field
+        yaml_tag = None
+
+    class FooValid(AbstractFooV):
+        yaml_tag = '!foo'
+
+        def __init__(self, a, b):
+            self.a = a
+            self.b = b
+
+        def __eq__(self, other):
+            return vars(self) == vars(other)
+
+    # instantiate
+    f = FooValid(1, 'hello')
+
+    # dump to yaml
+    o = f.dumps_yaml(safe=False)
+    assert o == "!foo {a: 1, b: hello}\n"
+
+    # load from yaml
+    g = FooValid.loads_yaml(o)
+    assert f == g

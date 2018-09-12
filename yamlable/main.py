@@ -55,7 +55,11 @@ class YamlAble(AbstractYamlAble):
     metaclass magic).
 
     The behaviour is very similar though:
-     - fill the `__yaml_tag_suffix__` either directly or using the @yaml_info() decorator
+     - fill the `__yaml_tag_suffix__` either directly or using the `@yaml_info()` decorator
+     - optionally implement `__from_yaml_dict__` (class method called during decoding) and/or `__to_yaml_dict__`
+    (instance method called during encoding) if you wish to have control on the process, for example to only dump part
+    of the attributes or perform some custom instance creation. Note that default implementation relies on `vars(self)`
+    for dumping and on `cls(**dct)` for loading.
     """
     __yaml_tag_suffix__ = None
     """ placeholder for a class-wide yaml tag. It will be prefixed with '!yamlable/', stored in `YAMLABLE_PREFIX` """

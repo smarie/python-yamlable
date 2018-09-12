@@ -94,7 +94,7 @@ class AbstractYamlObject(six.with_metaclass(ABCMeta, object)):
     def dump_yaml(self,
                   file_path_or_stream,  # type: Union[str, IOBase, StrinIO]
                   safe=True,            # type: bool
-                  **pyyaml_kwargs       # type: Dict[str, Any]
+                  **pyyaml_kwargs       # type: Any
                   ):
         # type: (...) -> None
         """
@@ -121,7 +121,7 @@ class AbstractYamlObject(six.with_metaclass(ABCMeta, object)):
 
     def dumps_yaml(self,
                    safe=True,       # type: bool
-                   **pyyaml_kwargs  # type: Dict[str, Any]
+                   **pyyaml_kwargs  # type: Any
                    ):
         # type: (...) -> str
         """

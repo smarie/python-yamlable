@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.6.0 - `YamlAble` does not provide a constructor anymore
+
+Fixes [#6](https://github.com/smarie/python-yamlable/issues/6).
+
 ### 0.5.0 - Python 2.7 support
 
 Fixes [#5](https://github.com/smarie/python-yamlable/issues/5)

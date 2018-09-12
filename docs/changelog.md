@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.7.1 - minor fix
+
+Fixed the file opening mode in `dump_yaml` method when a file path is provided as argument.
+
 ### 0.7.0 - Abstract class definition and checks have been simplified
 
 It should now be easier to define an abstract yaml-able class for several object types.

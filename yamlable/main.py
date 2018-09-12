@@ -55,8 +55,9 @@ class YamlAble(AbstractYamlAble):
     metaclass magic).
 
     The behaviour is very similar though:
+     - inherit from `YamlAble` or virtually inherit from it using YamlAble.register(cls)
      - fill the `__yaml_tag_suffix__` either directly or using the `@yaml_info()` decorator
-     - optionally implement `__from_yaml_dict__` (class method called during decoding) and/or `__to_yaml_dict__`
+     - optionally override `__from_yaml_dict__` (class method called during decoding) and/or `__to_yaml_dict__`
     (instance method called during encoding) if you wish to have control on the process, for example to only dump part
     of the attributes or perform some custom instance creation. Note that default implementation relies on `vars(self)`
     for dumping and on `cls(**dct)` for loading.

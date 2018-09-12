@@ -38,7 +38,7 @@ LICENSE_LONG = 'License :: OSI Approved :: BSD License'
 version_for_download_url = get_version()
 DOWNLOAD_URL = URL + '/tarball/' + version_for_download_url
 
-KEYWORDS = 'yaml file parsing parse load dump read object oo oriented codec format plugin pyYaml'
+KEYWORDS = 'yaml file parsing parse load dump read write object oo oriented codec format plugin pyYaml'
 # --Get the long description from the README file
 # with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 #    LONG_DESCRIPTION = f.read()
@@ -100,6 +100,7 @@ setup(
         # 'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
     ],
 
     # What does your project relate to?

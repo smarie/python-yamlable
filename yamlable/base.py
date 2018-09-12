@@ -49,7 +49,7 @@ class AbstractYamlObject(six.with_metaclass(ABCMeta, object)):
         Implementors should transform the object into a dictionary containing all information necessary to decode the
         object in the future. That dictionary will be serialized as a YAML mapping.
 
-        Default implementation returns vars(self). TODO maybe some day we'll need to rather make a copy...?
+        Default implementation returns vars(self).
         :return:
         """
         # Legacy compliance with old 'not dunder' method name TODO remove in future version
@@ -58,7 +58,7 @@ class AbstractYamlObject(six.with_metaclass(ABCMeta, object)):
                                        "supported in future version, please use '__to_yaml_dict__' instead")
             return self.to_yaml_dict()
 
-        # Default: return vars
+        # Default: return vars(self) (Note: no need to make a copy, pyyaml does not modify it)
         return vars(self)
 
     @classmethod

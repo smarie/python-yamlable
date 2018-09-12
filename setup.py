@@ -12,7 +12,7 @@ from six import raise_from
 here = path.abspath(path.dirname(__file__))
 
 # *************** Dependencies *********
-INSTALL_REQUIRES = ['pyyaml']  # 'typing_inspect' is now copied internally so as to be compliant with very old versions of typing module
+INSTALL_REQUIRES = ['pyyaml']
 DEPENDENCY_LINKS = []
 SETUP_REQUIRES = ['pytest-runner', 'setuptools_scm', 'pypandoc', 'pandoc']
 TESTS_REQUIRE = ['pytest', 'pytest-logging', 'pytest-cov']

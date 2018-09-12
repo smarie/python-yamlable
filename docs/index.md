@@ -28,7 +28,7 @@ Let's make a class yaml-able: we have to
 
  - inherit from `YamlAble`
  - decorate it with the `@yaml_info` annotation to declare the associated yaml tag
- - *optionally* implement `from_yaml_dict` (class method called during decoding) and/or `to_yaml_dict` (instance method called during encoding) if we wish to have control on the process, for example to only dump part of the attributes or perform some custom instance creation. Note that default implementation relies on `vars(self)` for dumping and on `cls(**dct)` for loading.
+ - *optionally* implement `__from_yaml_dict__` (class method called during decoding) and/or `__to_yaml_dict__` (instance method called during encoding) if we wish to have control on the process, for example to only dump part of the attributes or perform some custom instance creation. Note that default implementation relies on `vars(self)` for dumping and on `cls(**dct)` for loading.
  
 ```python
 from yamlable import yaml_info, YamlAble

@@ -1,5 +1,11 @@
 # Changelog
 
+### 1.0.0 - Compliance with PyYaml 5.1 and de-facto 1.0.0
+
+ * this version has been out and stable for long enough to be considered a good 1.0.0
+
+ * PyYaml 5.1 added some breaking changes. We now comply with them while still supporting the old versions. Fixed [#8](https://github.com/smarie/python-yamlable/issues/8).
+
 ### 0.7.1 - minor fix
 
 Fixed the file opening mode in `dump_yaml` method when a file path is provided as argument.

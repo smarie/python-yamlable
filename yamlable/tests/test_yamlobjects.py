@@ -49,8 +49,11 @@ def test_yamlobject_simple():
     f = Foo(1, 'hello')
 
     # dump to yaml
-    o = f.dumps_yaml(safe=False)
-    assert o == "!foo {a: 1, b: hello}\n"
+    o = f.dumps_yaml(safe=False, default_flow_style=False)
+    assert o == """!foo
+a: 1
+b: hello
+"""
 
     # load from yaml
     g = Foo.loads_yaml(o)
@@ -104,8 +107,11 @@ def test_abstract_parent():
     f = FooValid(1, 'hello')
 
     # dump to yaml
-    o = f.dumps_yaml(safe=False)
-    assert o == "!foo {a: 1, b: hello}\n"
+    o = f.dumps_yaml(safe=False, default_flow_style=False)
+    assert o == """!foo
+a: 1
+b: hello
+"""
 
     # load from yaml
     g = FooValid.loads_yaml(o)

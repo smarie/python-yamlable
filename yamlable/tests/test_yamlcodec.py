@@ -69,14 +69,19 @@ def test_yamlcodec():
 
     # instantiate
     f = Foo(1, 'hello')
-    fy = "!mycodec/yaml.tests.Foo {a: 1, b: hello}\n"
+    fy = """!mycodec/yaml.tests.Foo
+a: 1
+b: hello
+"""
 
     b = Bar('what?')
-    by = "!mycodec/yaml.tests.Bar {c: 'what?'}\n"
+    by = """!mycodec/yaml.tests.Bar
+c: what?
+"""
 
     # dump pyyaml
-    assert dump(f) == fy
-    assert dump(b) == by
+    assert dump(f, default_flow_style=False) == fy
+    assert dump(b, default_flow_style=False) == by
 
     # load pyyaml
     assert f == load(fy)

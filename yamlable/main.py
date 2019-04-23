@@ -262,7 +262,17 @@ def encode_yamlable(dumper,
         return dumper.represent_mapping(yaml_tag, new_data, flow_style=None)
 
 
-def register_yamlable_codec(loaders=(Loader, SafeLoader), dumpers=(Dumper, SafeDumper)):
+try:  # PyYaml 5.1+
+    from yaml import FullLoader, UnsafeLoader
+    ALL_PYYAML_LOADERS = (Loader, SafeLoader, FullLoader, UnsafeLoader)
+except ImportError:
+    ALL_PYYAML_LOADERS = (Loader, SafeLoader)
+
+
+ALL_PYYAML_DUMPERS = (Dumper, SafeDumper)
+
+
+def register_yamlable_codec(loaders=ALL_PYYAML_LOADERS, dumpers=ALL_PYYAML_DUMPERS):
     # type: (...) -> None
     """
     Registers the yamlable encoder and decoder with all pyYaml loaders and dumpers.
@@ -472,7 +482,7 @@ class YamlCodec(six.with_metaclass(ABCMeta, object)):
         """
 
     @classmethod
-    def register_with_pyyaml(cls, loaders={Loader, SafeLoader}, dumpers={Dumper, SafeDumper}):
+    def register_with_pyyaml(cls, loaders=ALL_PYYAML_LOADERS, dumpers=ALL_PYYAML_DUMPERS):
         # type: (...) -> None
         """
         Registers this codec with PyYaml, on the provided loaders and dumpers (default: all PyYaml loaders and dumpers).
@@ -480,9 +490,9 @@ class YamlCodec(six.with_metaclass(ABCMeta, object)):
          - The decoding part is registered for the yaml prefix in cls.get_yaml_prefix()
 
         :param loaders: the PyYaml loaders to register this codec with. By default all pyyaml loaders are considered
-            (Loader, SafeLoader)
+            (Loader, SafeLoader...)
         :param dumpers: the PyYaml dumpers to register this codec with. By default all pyyaml loaders are considered
-            (Dumper, SafeDumper)
+            (Dumper, SafeDumper...)
         :return:
         """
         for loader in loaders:

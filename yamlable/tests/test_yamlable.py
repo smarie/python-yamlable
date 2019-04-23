@@ -81,8 +81,11 @@ def test_yamlable():
     f = Foo(1, 'hello')  # note:
 
     # dump
-    y = f.dumps_yaml()
-    assert y == "!yamlable/yaml.tests.Foo {a: 1, b: hello}\n"
+    y = f.dumps_yaml(default_flow_style=False)
+    assert y == """!yamlable/yaml.tests.Foo
+a: 1
+b: hello
+"""
 
     # dump io
     class MemorizingStringIO(StringIO):
@@ -93,11 +96,11 @@ def test_yamlable():
             StringIO.close(self)
 
     s = MemorizingStringIO()
-    f.dump_yaml(s)
+    f.dump_yaml(s, default_flow_style=False)
     assert s.value == y
 
     # dump pyyaml
-    assert dump(f) == y
+    assert dump(f, default_flow_style=False) == y
 
     # load
     assert f == Foo.loads_yaml(y)
@@ -147,8 +150,11 @@ def test_yamlable_legacy_method_names():
     f = FooLegacy(1, 'hello')
 
     # dump
-    y = f.dumps_yaml()
-    assert y == "!yamlable/yaml.tests.FooLegacy {a: 1, b: hello}\n"
+    y = f.dumps_yaml(default_flow_style=False)
+    assert y == """!yamlable/yaml.tests.FooLegacy
+a: 1
+b: hello
+"""
 
     # dump io
     class MemorizingStringIO(StringIO):
@@ -159,11 +165,11 @@ def test_yamlable_legacy_method_names():
             StringIO.close(self)
 
     s = MemorizingStringIO()
-    f.dump_yaml(s)
+    f.dump_yaml(s, default_flow_style=False)
     assert s.value == y
 
     # dump pyyaml
-    assert dump(f) == y
+    assert dump(f, default_flow_style=False) == y
 
     # load
     assert f == FooLegacy.loads_yaml(y)
@@ -228,10 +234,13 @@ def test_yamlable_default_impl():
             self.b = b
 
     f = Foo_Default(1, 'hello')
-    s = '!yamlable/yaml.tests.Foo_Default {a: 1, b: hello}\n'
-    assert dump(f) == s
+    s = """!yamlable/yaml.tests.Foo_Default
+a: 1
+b: hello
+"""
+    assert dump(f, default_flow_style=False) == s
 
-    assert dump(load(dump(load(s)))) == s
+    assert dump(load(dump(load(s))), default_flow_style=False) == s
 
 
 def test_help_yaml_info():
@@ -297,8 +306,11 @@ def test_abstract_parent():
     f = FooValid(1, 'hello')  # note:
 
     # dump
-    y = f.dumps_yaml()
-    assert y == "!yamlable/yaml.tests.FooValid {a: 1, b: hello}\n"
+    y = f.dumps_yaml(default_flow_style=False)
+    assert y == """!yamlable/yaml.tests.FooValid
+a: 1
+b: hello
+"""
 
     # dump io
     class MemorizingStringIO(StringIO):
@@ -310,11 +322,11 @@ def test_abstract_parent():
             StringIO.close(self)
 
     s = MemorizingStringIO()
-    f.dump_yaml(s)
+    f.dump_yaml(s, default_flow_style=False)
     assert s.value == y
 
     # dump pyyaml
-    assert dump(f) == y
+    assert dump(f, default_flow_style=False) == y
 
     # load
     assert f == FooValid.loads_yaml(y)

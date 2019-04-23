@@ -3,11 +3,10 @@ See:
 https://packaging.python.org/en/latest/distributing.html
 https://github.com/pypa/sampleproject
 """
-
+from six import raise_from
 from os import path
 
 from setuptools import setup, find_packages
-from six import raise_from
 
 here = path.abspath(path.dirname(__file__))
 
@@ -22,9 +21,7 @@ EXTRAS_REQUIRE = {}
 try:
     from setuptools_scm import get_version
 except Exception as e:
-    raise_from(Exception('Required packages for setup not found. You may wish you execute '
-                         '"pip install -r ci_tools/requirements-setup.txt" to install them or alternatively install '
-                         'them manually using conda or other system. The list is : ' + str(SETUP_REQUIRES)), e)
+    raise_from(Exception('Required packages for setup not found. Please install `setuptools_scm`'), e)
 
 # ************** ID card *****************
 DISTNAME = 'yamlable'
@@ -44,19 +41,19 @@ KEYWORDS = 'yaml file parsing parse load dump read write object oo oriented code
 #    LONG_DESCRIPTION = f.read()
 try:
     import pypandoc
-    LONG_DESCRIPTION = pypandoc.convert(path.join(here, 'README.md'), 'rst').replace('\r', '')
+    LONG_DESCRIPTION = pypandoc.convert(path.join(here, 'docs', 'long_description.md'), 'rst').replace('\r', '')
 except(ImportError):
     from warnings import warn
     warn('WARNING pypandoc could not be imported - we recommend that you install it in order to package the '
          'documentation correctly')
     LONG_DESCRIPTION = open('README.md').read()
 
-# ************* VERSION A **************
+# ************* VERSION **************
 # --Get the Version number from VERSION file, see https://packaging.python.org/single_source_version/ option 4.
 # THIS IS DEPRECATED AS WE NOW USE GIT TO MANAGE VERSION
 # with open(path.join(here, 'VERSION')) as version_file:
 #    VERSION = version_file.read().strip()
-OBSOLETES = []
+# OBSOLETES = []
 
 setup(
     name=DISTNAME,
@@ -123,7 +120,7 @@ setup(
 
     # we're using git
     use_scm_version=True, # this provides the version + adds the date if local non-commited changes.
-    # use_scm_version={'local_scheme':'dirty-tag'}, # provides the version + adds '+dirty' if local non-commited changes
+    # use_scm_version={'local_scheme':'dirty-tag'}, # this provides the version + adds '+dirty' if local non-commited changes.
     setup_requires=SETUP_REQUIRES,
 
     # test
@@ -136,7 +133,7 @@ setup(
     # $ pip install -e .[dev,test]
     extras_require=EXTRAS_REQUIRE,
 
-    obsoletes=OBSOLETES
+    # obsoletes=OBSOLETES
 
     # If there are data files included in your packages that need to be
     # installed, specify them here.  If using Python 2.6 or less, then these

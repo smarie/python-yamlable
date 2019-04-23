@@ -2,7 +2,9 @@
 
 *Convert Python objects to YAML and back.*
 
-[![Build Status](https://travis-ci.org/smarie/python-yamlable.svg?branch=master)](https://travis-ci.org/smarie/python-yamlable) [![Tests Status](https://smarie.github.io/python-yamlable/junit/junit-badge.svg?dummy=8484744)](https://smarie.github.io/python-yamlable/junit/report.html) [![codecov](https://codecov.io/gh/smarie/python-yamlable/branch/master/graph/badge.svg)](https://codecov.io/gh/smarie/python-yamlable) [![Documentation](https://img.shields.io/badge/docs-latest-blue.svg)](https://smarie.github.io/python-yamlable/) [![PyPI](https://img.shields.io/badge/PyPI-yamlable-blue.svg)](https://pypi.python.org/pypi/yamlable/)
+[![Python versions](https://img.shields.io/pypi/pyversions/yamlable.svg)](https://pypi.python.org/pypi/yamlable/) [![Build Status](https://travis-ci.org/smarie/python-yamlable.svg?branch=master)](https://travis-ci.org/smarie/python-yamlable) [![Tests Status](https://smarie.github.io/python-yamlable/junit/junit-badge.svg?dummy=8484744)](https://smarie.github.io/python-yamlable/junit/report.html) [![codecov](https://codecov.io/gh/smarie/python-yamlable/branch/master/graph/badge.svg)](https://codecov.io/gh/smarie/python-yamlable)
+
+[![Documentation](https://img.shields.io/badge/doc-latest-blue.svg)](https://smarie.github.io/python-yamlable/) [![PyPI](https://img.shields.io/pypi/v/yamlable.svg)](https://pypi.python.org/pypi/yamlable/) [![Downloads](https://pepy.tech/badge/yamlable)](https://pepy.tech/project/yamlable) [![Downloads per week](https://pepy.tech/badge/yamlable/week)](https://pepy.tech/project/yamlable) [![GitHub stars](https://img.shields.io/github/stars/smarie/python-yamlable.svg)](https://github.com/smarie/python-yamlable/stargazers)
 
 **This is the readme for developers.** The documentation for users is available here: [https://smarie.github.io/python-yamlable/](https://smarie.github.io/python-yamlable/)
 
@@ -34,9 +36,7 @@ This project uses `setuptools_scm` to synchronise the version number. Therefore 
 python setup.py egg_info bdist_wheel rotate -m.whl -k3
 ```
 
-You need to [generate code](##building-from-sources--notes-on-this-projects-design-principles) before packaging.
-
-You also may need to install requirements for setup beforehand, using 
+You may need to install requirements for setup beforehand, using 
 
 ```bash
 pip install -r ci_tools/requirements-setup.txt
@@ -47,7 +47,7 @@ pip install -r ci_tools/requirements-setup.txt
 This project uses `mkdocs` to generate its documentation page. Therefore building a local copy of the doc page may be done using:
 
 ```bash
-mkdocs build
+mkdocs build -f docs/mkdocs.yml
 ```
 
 You may need to install requirements for doc beforehand, using 
@@ -74,3 +74,20 @@ This project is now automatically deployed to PyPI when a tag is created. Anyway
 twine upload dist/* -r pypitest
 twine upload dist/*
 ```
+
+### Merging pull requests with edits - memo
+
+Ax explained in github ('get commandline instructions'):
+
+```bash
+git checkout -b <git_name>-<feature_branch> master
+git pull https://github.com/<git_name>/python-yamlable.git <feature_branch> --no-commit --ff-only
+```
+
+if the second step does not work, do a normal auto-merge (do not use **rebase**!):
+
+```bash
+git pull https://github.com/<git_name>/python-yamlable.git <feature_branch> --no-commit
+```
+
+Finally review the changes, possibly perform some modifications, and commit.

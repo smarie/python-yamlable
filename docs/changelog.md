@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.0.1 - added `__version__` attribute
+
+Added `__version__` pkg-level attribute.
+
 ### 1.0.0 - Compliance with PyYaml 5.1 and de-facto 1.0.0
 
  * this version has been out and stable for long enough to be considered a good 1.0.0

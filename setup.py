@@ -13,8 +13,8 @@ here = path.abspath(path.dirname(__file__))
 # *************** Dependencies *********
 INSTALL_REQUIRES = ['pyyaml']
 DEPENDENCY_LINKS = []
-SETUP_REQUIRES = ['pytest-runner', 'setuptools_scm', 'pypandoc', 'pandoc']
-TESTS_REQUIRE = ['pytest', 'pytest-logging', 'pytest-cov']
+SETUP_REQUIRES = ['pytest-runner', 'setuptools_scm']
+TESTS_REQUIRE = ['pytest', 'pytest-logging']
 EXTRAS_REQUIRE = {}
 
 # simple check
@@ -36,17 +36,9 @@ version_for_download_url = get_version()
 DOWNLOAD_URL = URL + '/tarball/' + version_for_download_url
 
 KEYWORDS = 'yaml file parsing parse load dump read write object oo oriented codec format plugin pyYaml'
-# --Get the long description from the README file
-# with open(path.join(here, 'README.md'), encoding='utf-8') as f:
-#    LONG_DESCRIPTION = f.read()
-try:
-    import pypandoc
-    LONG_DESCRIPTION = pypandoc.convert(path.join(here, 'docs', 'long_description.md'), 'rst').replace('\r', '')
-except(ImportError):
-    from warnings import warn
-    warn('WARNING pypandoc could not be imported - we recommend that you install it in order to package the '
-         'documentation correctly')
-    LONG_DESCRIPTION = open('README.md').read()
+
+with open(path.join(here, 'docs', 'long_description.md')) as f:
+    LONG_DESCRIPTION = f.read()
 
 # ************* VERSION **************
 # --Get the Version number from VERSION file, see https://packaging.python.org/single_source_version/ option 4.
@@ -59,6 +51,7 @@ setup(
     name=DISTNAME,
     description=DESCRIPTION,
     long_description=LONG_DESCRIPTION,
+    long_description_content_type='text/markdown',
 
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
@@ -119,7 +112,7 @@ setup(
     dependency_links=DEPENDENCY_LINKS,
 
     # we're using git
-    use_scm_version=True, # this provides the version + adds the date if local non-commited changes.
+    use_scm_version={'write_to': '%s/_version.py' % DISTNAME}, # this provides the version + adds the date if local non-commited changes.
     # use_scm_version={'local_scheme':'dirty-tag'}, # this provides the version + adds '+dirty' if local non-commited changes.
     setup_requires=SETUP_REQUIRES,
 

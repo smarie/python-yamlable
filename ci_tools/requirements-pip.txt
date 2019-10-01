@@ -1,8 +1,6 @@
 # --- to execute setup.py whatever the goal
 setuptools_scm
 pytest-runner
-pandoc
-pypandoc
 
 # --- to install
 pyyaml$PYYAML_VERSION
@@ -12,8 +10,8 @@ pytest  #$PYTEST_VERSION
 pytest-logging  # ==2015.11.4
 
 # --- to generate the reports (see scripts in ci_tools, called by .travis)
-pytest-cov==2.6.0  # after 2.6.1 it requires pytest 3.6
-pytest-html  #$PYTEST_HTML_VERSION
+# pytest-cov==2.6.0  # after 2.6.1 it requires pytest 3.6
+pytest-html==1.9.0  # otherwise requires pytest 5
 xunitparser
 
 # --- to generate the doc (see .travis)

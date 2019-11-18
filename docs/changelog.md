@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.0.2 - `pyproject.toml`
+
+Added `pyproject.toml`.
+
 ### 1.0.1 - added `__version__` attribute
 
 Added `__version__` pkg-level attribute.

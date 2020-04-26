@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.0.3 - packaging improvements
+
+ - packaging improvements: set the "universal wheel" flag to 1, and cleaned up the `setup.py`. In particular removed dependency to `six` for setup and added `py.typed` file, as well as set the `zip_safe` flag to False. Removed tests folder from package. Fixes [#10](https://github.com/smarie/python-yamlable/issues/10)
+
 ### 1.0.2 - `pyproject.toml`
 
 Added `pyproject.toml`.

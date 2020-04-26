@@ -34,6 +34,8 @@ install:
   # needs to be installed beforehand
   - pip install setuptools_scm
   - python ci_tools/py_install.py pip ci_tools/requirements-pip.txt
+  # this does not work anymore on python 2 so lets only do it when needed
+  - if [ "${TRAVIS_PYTHON_VERSION}" = "3.5" ]; then pip install mkdocs-material mkdocs; fi;
   # travis-specific installs
   - pip install PyGithub  # for ci_tools/github_release.py
   - pip install codecov  # See https://github.com/codecov/example-python.
@@ -79,6 +81,8 @@ after_success:
     else
       echo "File 'ci_tools/github_travis_rsa' has not been created, please check your encrypted repo token in .travis.yml, on the line starting with 'openssl aes-256-cbc...'"
     fi
+  # -- create the _version.py file
+  # - python ci_tools/write_version.py ./yamlable
 
 deploy:
   # Deploy on PyPI on tags

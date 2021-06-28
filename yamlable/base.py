@@ -3,10 +3,10 @@ from collections import OrderedDict
 
 try:
     # Python 2 only:
-    from StringIO import StringIO
+    from StringIO import StringIO as _StringIO  # type: ignore  # noqa
 
     # create a variant that can serve as a context manager
-    class StringIO(StringIO):
+    class StringIO(_StringIO):
         def __enter__(self):
             return self
 
@@ -15,7 +15,7 @@ try:
 
 except ImportError:
     # (IOBase is only used in type hints)
-    from io import IOBase, StringIO
+    from io import IOBase, StringIO  # type: ignore
 
 from warnings import warn
 
@@ -57,7 +57,7 @@ class AbstractYamlObject(six.with_metaclass(ABCMeta, object)):
         if 'to_yaml_dict' in dir(self):
             warn(type(self).__name__ + " still uses the legacy method name 'to_yaml_dict'. This name will not be "
                                        "supported in future version, please use '__to_yaml_dict__' instead")
-            return self.to_yaml_dict()
+            return self.to_yaml_dict()  # type: ignore
 
         # Default: return vars(self) (Note: no need to make a copy, pyyaml does not modify it)
         return vars(self)
@@ -86,13 +86,13 @@ class AbstractYamlObject(six.with_metaclass(ABCMeta, object)):
         if 'from_yaml_dict' in dir(cls):
             warn(cls.__name__ + " still uses the legacy method name 'from_yaml_dict'. This name will not be "
                                 "supported in future version, please use '__from_yaml_dict__' instead")
-            return cls.from_yaml_dict(dct, yaml_tag)
+            return cls.from_yaml_dict(dct, yaml_tag)  # type: ignore
 
         # Default: call constructor with all keyword arguments
-        return cls(**dct)
+        return cls(**dct)  # type: ignore
 
     def dump_yaml(self,
-                  file_path_or_stream,  # type: Union[str, IOBase, StrinIO]
+                  file_path_or_stream,  # type: Union[str, IOBase, StringIO]
                   safe=True,            # type: bool
                   **pyyaml_kwargs       # type: Any
                   ):
@@ -113,7 +113,7 @@ class AbstractYamlObject(six.with_metaclass(ABCMeta, object)):
                 else:
                     dump(self, f, **pyyaml_kwargs)
         else:
-            with file_path_or_stream as f:
+            with file_path_or_stream as f:  # type: ignore
                 if safe:
                     safe_dump(self, f, **pyyaml_kwargs)
                 else:
@@ -175,7 +175,7 @@ class AbstractYamlObject(six.with_metaclass(ABCMeta, object)):
                 else:
                     res = load(f.read())
         else:
-            with file_path_or_stream as f:
+            with file_path_or_stream as f:  # type: ignore
                 if safe:
                     res = safe_load(f.read())
                 else:

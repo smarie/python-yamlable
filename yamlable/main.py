@@ -4,7 +4,7 @@ from abc import abstractmethod, ABCMeta
 import six
 
 try:  # python 3.5+
-    from typing import TypeVar, Callable, Optional, Iterable, Any, Tuple, Mapping, Any, Dict
+    from typing import TypeVar, Callable, Optional, Iterable, Any, Tuple, Mapping, Any, Dict, Set, List
     YA = TypeVar('YA', bound='YamlAble')
     T = TypeVar('T')
 except ImportError:
@@ -97,7 +97,7 @@ class YamlAble(AbstractYamlAble):
 def yaml_info(yaml_tag=None,     # type: str
               yaml_tag_ns=None   # type: str
               ):
-    # type: (...) -> Callable[[Type[YA], Optional[str], Optional[str]], Type[YA]]
+    # type: (...) -> Callable[[Type[YA]], Type[YA]]
     """
     A simple class decorator to tag a class with a global yaml tag - that way you do not have to call `YamlAble` super
     constructor.
@@ -132,7 +132,9 @@ def yaml_info(yaml_tag=None,     # type: str
     :param yaml_tag_ns: the yaml namespace. It will be appended with '.<cls.__name__>'
     :return:
     """
-    def f(cls):
+    def f(cls  # type: Type[YA]
+          ):
+        # type: (...) -> Type[YA]
         return yaml_info_decorate(cls, yaml_tag=yaml_tag, yaml_tag_ns=yaml_tag_ns)
     return f
 
@@ -180,8 +182,12 @@ def yaml_info_decorate(cls,               # type: Type[YA]
     if yaml_tag_ns is not None:
         if yaml_tag is not None:
             raise ValueError("Only one of 'yaml_tag' and 'yaml_tag_ns' should be provided")
-        # default: append the class name
+
+        # create yaml_tag by appending the class name to the namespace
         yaml_tag = yaml_tag_ns + '.' + cls.__name__
+
+    elif yaml_tag is None:
+        raise ValueError("One non-None `yaml_tag` or `yaml_tag_ns` must be provided.")
 
     if issubclass(cls, YamlObject2):
         if not yaml_tag.startswith('!'):
@@ -193,7 +199,7 @@ def yaml_info_decorate(cls,               # type: Type[YA]
         if yaml_tag.startswith('!'):
             raise ValueError("When extending YamlAble, the `yaml_tag` field should only contain the yaml tag suffix, "
                              "and should therefore NOT start with !")
-        cls.__yaml_tag_suffix__ = yaml_tag
+        cls.__yaml_tag_suffix__ = yaml_tag  # type: ignore
     else:
         raise TypeError("classes tagged with @yaml_info should be subclasses of YamlAble or YamlObject2")
 
@@ -263,10 +269,10 @@ def encode_yamlable(dumper,
 
 
 try:  # PyYaml 5.1+
-    from yaml import FullLoader, UnsafeLoader
-    ALL_PYYAML_LOADERS = (Loader, SafeLoader, FullLoader, UnsafeLoader)
+    from yaml import FullLoader
+    ALL_PYYAML_LOADERS = (Loader, SafeLoader, FullLoader)
 except ImportError:
-    ALL_PYYAML_LOADERS = (Loader, SafeLoader)
+    ALL_PYYAML_LOADERS = (Loader, SafeLoader)  # type: ignore
 
 
 ALL_PYYAML_DUMPERS = (Dumper, SafeDumper)
@@ -322,7 +328,7 @@ def _get_all_subclasses(typ,             # type: Type[T]
     sub_list = typ.__subclasses__()
 
     # recurse
-    result = []
+    result = []  # type: List[Type[T]]
     for t in sub_list:
         # only keep the origins in the list
         # to = get_origin(t) or t

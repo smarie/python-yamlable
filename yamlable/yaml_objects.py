@@ -22,7 +22,7 @@ class YAMLObjectMetaclassStrict(YAMLObjectMetaclass):
     """
     Improved metaclass for YAMLObject, that raises an error if yaml_tag is not defined
     """
-    def __init__(cls,   # type: Type[YO2]
+    def __init__(cls,   # type: Type[YO2]  # type: ignore
                  name, bases, kwds):
 
         # construct as usual
@@ -108,4 +108,4 @@ class YamlObject2(six.with_metaclass(ABCYAMLMeta, AbstractYamlObject, YAMLObject
         :return:
         """
         constructor_args = read_yaml_node_as_dict(loader, node)
-        return cls.__from_yaml_dict__(constructor_args, yaml_tag=cls.yaml_tag)
+        return cls.__from_yaml_dict__(constructor_args, yaml_tag=cls.yaml_tag)  # type: ignore

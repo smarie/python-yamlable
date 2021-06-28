@@ -114,7 +114,8 @@ def tests(session: PowerSession, coverage, pkg_specs):
         session.run2("python -m pytest --cache-clear -v %s/tests/" % pkg_name)
     else:
         # coverage + junit html reports + badge generation
-        session.install_reqs(phase="coverage", phase_reqs=["coverage", "pytest-html", "requests", "xunitparser"],
+        session.install_reqs(phase="coverage",
+                             phase_reqs=["coverage", "pytest-html", "genbadge[tests,coverage]"],
                              versions_dct=pkg_specs)
 
         # --coverage + junit html reports
@@ -139,6 +140,7 @@ def flake8(session: PowerSession):
     """Launch flake8 qualimetry."""
 
     session.install("-r", str(Folders.ci_tools / "flake8-requirements.txt"))
+    session.install("genbadge[flake8]")
     session.run2("pip install -e .[flake8]")
 
     rm_folder(Folders.flake8_reports)

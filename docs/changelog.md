@@ -3,6 +3,7 @@
 ### 1.0.4 - better type hinting (mypy)
 
  - Most type hints have been fixed, in particular for `@yaml_info`. Fixes [#11](https://github.com/smarie/python-yamlable/issues/11).
+ - CI/CD pipeline migrated to Github Actions. Added badges using `genbadge`
 
 ### 1.0.3 - packaging improvements
 

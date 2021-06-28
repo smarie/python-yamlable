@@ -1,10 +1,15 @@
+#  Authors: Sylvain MARIE <sylvain.marie@se.com>
+#            + All contributors to <https://github.com/smarie/python-yamlable>
+#
+#  License: 3-clause BSD, <https://github.com/smarie/python-yamlable/blob/master/LICENSE>
+
 import collections
 from abc import abstractmethod, ABCMeta
 
 import six
 
 try:  # python 3.5+
-    from typing import TypeVar, Callable, Optional, Iterable, Any, Tuple, Mapping, Any, Dict, Set, List
+    from typing import TypeVar, Callable, Iterable, Any, Tuple, Dict, Set, List
     YA = TypeVar('YA', bound='YamlAble')
     T = TypeVar('T')
 except ImportError:
@@ -13,7 +18,7 @@ except ImportError:
 try:  # python 3.5.4+
     from typing import Type
 except ImportError:
-    pass # normal for old versions of typing
+    pass  # normal for old versions of typing
 
 from yaml import Loader, SafeLoader, Dumper, SafeDumper, MappingNode
 
@@ -452,8 +457,8 @@ class YamlCodec(six.with_metaclass(ABCMeta, object)):
 
         :param dumper:
         :param obj:
-        :param without_custom_tag: if this is set to True, the yaml tag !yamlable/<yaml_tag_suffix> will not be written to
-            the document. Warning: if you do so, decoding the object will not be easy!
+        :param without_custom_tag: if this is set to True, the yaml tag !yamlable/<yaml_tag_suffix> will not be written
+            to the document. Warning: if you do so, decoding the object will not be easy!
         :param kwargs: keyword arguments coming from pyyaml, not sure what you will find here.
         :return:
         """

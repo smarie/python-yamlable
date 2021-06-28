@@ -1,3 +1,8 @@
+#  Authors: Sylvain MARIE <sylvain.marie@se.com>
+#            + All contributors to <https://github.com/smarie/python-yamlable>
+#
+#  License: 3-clause BSD, <https://github.com/smarie/python-yamlable/blob/master/LICENSE>
+
 from yamlable.base import AbstractYamlObject, NONE_IGNORE_CHECKS, read_yaml_node_as_dict
 from yamlable.main import YamlCodec, register_yamlable_codec, yaml_info_decorate, yaml_info, YamlAble, \
     AbstractYamlAble, YAMLABLE_PREFIX
@@ -26,13 +31,13 @@ __all__ = [
 ]
 
 try:  # python 3.5+
-    from yamlable.base import Y
+    from yamlable.base import Y  # noqa: F401
     __all__.append('Y')
 except ImportError:
     pass
 
 try:  # python 3.5+
-    from yamlable.main import YA
+    from yamlable.main import YA  # noqa: F401
     __all__.append('YA')
 except ImportError:
     pass

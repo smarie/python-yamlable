@@ -1,3 +1,8 @@
+#  Authors: Sylvain MARIE <sylvain.marie@se.com>
+#            + All contributors to <https://github.com/smarie/python-yamlable>
+#
+#  License: 3-clause BSD, <https://github.com/smarie/python-yamlable/blob/master/LICENSE>
+
 from abc import ABCMeta
 from collections import OrderedDict
 
@@ -32,7 +37,7 @@ except ImportError:
 try:  # python 3.5.4+
     from typing import Type
 except ImportError:
-    pass # normal for old versions of typing
+    pass  # normal for old versions of typing
 
 
 class AbstractYamlObject(six.with_metaclass(ABCMeta, object)):

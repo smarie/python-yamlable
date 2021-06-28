@@ -328,7 +328,7 @@
 <h2 id="yamlcodec"><code>YamlCodec</code><a class="headerlink" href="#yamlcodec" title="Permanent link">&para;</a></h2>
 <p>Sometimes you do not have the possibility to change the classes of the objects that you wish to encode/decode. In this case the solution is to write an independent codec, inheriting from <code>YamlCodec</code>. Once again this feature leverages the <code>multi_constructor</code> and <code>multi_representer</code> concepts available in the <code>PyYaml</code> internals, but with <code>YamlCodec</code> it becomes a bit easier to do.</p>
 <p>Let's assume that the following two classes are given and can not be modified:</p>
-<div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="nc">Foo</span><span class="p">:</span>
+<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Foo</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="n">a</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">b</span>
@@ -343,7 +343,6 @@
     <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">vars</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 </code></pre></div>
-
 <p>Writing a codec is quite simple:</p>
 <ul>
 <li>first inherit from <code>YamlCodec</code> and fill <code>get_yaml_prefix</code> so that it returns the common prefix that all yaml objects encoded/decoded by this codec will use</li>
@@ -359,7 +358,7 @@
 </li>
 </ul>
 <p>The example below shows how it can be done:</p>
-<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">yamlable</span> <span class="kn">import</span> <span class="n">YamlCodec</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">yamlable</span> <span class="kn">import</span> <span class="n">YamlCodec</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Tuple</span>
 
 
@@ -403,14 +402,12 @@
         <span class="c1"># Encode the given object and also return the tag that it should have</span>
         <span class="k">return</span> <span class="n">types_to_yaml_tags</span><span class="p">[</span><span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)],</span> <span class="nb">vars</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
 </code></pre></div>
-
 <p>When you codec has been defined, it needs to be registerd before being usable. You can specify with which <code>PyYaml</code> Loaders/Dumpers it should be registered, or use the default (all): </p>
-<div class="codehilite"><pre><span></span><code><span class="c1"># register the codec</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># register the codec</span>
 <span class="n">MyCodec</span><span class="o">.</span><span class="n">register_with_pyyaml</span><span class="p">()</span>
 </code></pre></div>
-
 <p>Finally let's test that the codec works:</p>
-<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">yaml</span> <span class="kn">import</span> <span class="n">dump</span><span class="p">,</span> <span class="n">load</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">yaml</span> <span class="kn">import</span> <span class="n">dump</span><span class="p">,</span> <span class="n">load</span>
 
 <span class="c1"># instantiate</span>
 <span class="n">f</span> <span class="o">=</span> <span class="n">Foo</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;hello&#39;</span><span class="p">)</span>

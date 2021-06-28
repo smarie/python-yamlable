@@ -418,9 +418,8 @@
 <p>You can then optionally override the methods <code>to_yaml_dict</code> and <code>from_yaml_dict</code> to write to / load from a dictionary, so as to adapt the yaml-ability to your class needs.</p>
 <p>In addition <code>yamlable</code> provides a way to create Yaml codecs for several object types at the same time (<code>YamlCodec</code>) (see <a href="./usage">Usage</a> page)</p>
 <h2 id="installing">Installing<a class="headerlink" href="#installing" title="Permanent link">&para;</a></h2>
-<div class="codehilite"><pre><span></span><code>&gt; pip install yamlable
+<div class="highlight"><pre><span></span><code>&gt; pip install yamlable
 </code></pre></div>
-
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
 <p>Let's make a class yaml-able: we have to</p>
 <ul>
@@ -428,7 +427,7 @@
 <li>decorate it with the <code>@yaml_info</code> annotation to declare the associated yaml tag</li>
 <li><em>optionally</em> implement <code>__from_yaml_dict__</code> (class method called during decoding) and/or <code>__to_yaml_dict__</code> (instance method called during encoding) if we wish to have control on the process, for example to only dump part of the attributes or perform some custom instance creation. Note that default implementation relies on <code>vars(self)</code> for dumping and on <code>cls(**dct)</code> for loading.</li>
 </ul>
-<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">yamlable</span> <span class="kn">import</span> <span class="n">yaml_info</span><span class="p">,</span> <span class="n">YamlAble</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">yamlable</span> <span class="kn">import</span> <span class="n">yaml_info</span><span class="p">,</span> <span class="n">YamlAble</span>
 
 <span class="nd">@yaml_info</span><span class="p">(</span><span class="n">yaml_tag_ns</span><span class="o">=</span><span class="s1">&#39;com.yamlable.example&#39;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Foo</span><span class="p">(</span><span class="n">YamlAble</span><span class="p">):</span>
@@ -452,43 +451,37 @@
         <span class="sd">&quot;&quot;&quot; This optional method is called when you call yaml.load()&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">Foo</span><span class="p">(</span><span class="n">dct</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">],</span> <span class="n">dct</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">])</span>
 </code></pre></div>
-
 <p>That's it! Let's check that our class is correct and allows us to create instances:</p>
-<div class="codehilite"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">f</span> <span class="o">=</span> <span class="n">Foo</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;hello&#39;</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">f</span> <span class="o">=</span> <span class="n">Foo</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;hello&#39;</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
 <span class="n">Foo</span> <span class="o">-</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="s1">&#39;hello&#39;</span><span class="p">}</span>
 </code></pre></div>
-
 <p>Now let's dump and load it using <code>pyyaml</code>:</p>
-<div class="codehilite"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">yaml</span>
+<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">yaml</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
 
 <span class="err">!</span><span class="n">yamlable</span><span class="o">/</span><span class="n">com</span><span class="o">.</span><span class="n">yamlable</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">Foo</span> <span class="p">{</span><span class="n">a</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">hello</span><span class="p">}</span>
 </code></pre></div>
-
-<div class="codehilite"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="s2">&quot;!yamlable/com.yamlable.example.Foo {a: 0, b: hey}&quot;</span><span class="p">))</span>
+<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="s2">&quot;!yamlable/com.yamlable.example.Foo {a: 0, b: hey}&quot;</span><span class="p">))</span>
 
 <span class="n">Foo</span> <span class="o">-</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="s1">&#39;hey&#39;</span><span class="p">}</span>
 </code></pre></div>
-
 <p>For more general cases where your object is embedded in a more complex structure for example, it will work as expected:</p>
-<div class="codehilite"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;foo&#39;</span><span class="p">:</span> <span class="n">f</span><span class="p">,</span> <span class="s1">&#39;foo2&#39;</span><span class="p">:</span> <span class="mi">12</span><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;foo&#39;</span><span class="p">:</span> <span class="n">f</span><span class="p">,</span> <span class="s1">&#39;foo2&#39;</span><span class="p">:</span> <span class="mi">12</span><span class="p">}</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">safe_dump</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
 
 <span class="n">foo</span><span class="p">:</span> <span class="err">!</span><span class="n">yamlable</span><span class="o">/</span><span class="n">com</span><span class="o">.</span><span class="n">yamlable</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">Foo</span> <span class="p">{</span><span class="n">a</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">hello</span><span class="p">}</span>
 <span class="n">foo2</span><span class="p">:</span> <span class="mi">12</span>
 </code></pre></div>
-
 <p>In addition, the object directly offers the <code>dump_yaml</code> (dumping to file) / <code>dumps_yaml</code> (dumping to string) convenience methods, and the class directly offers the <code>load_yaml</code> (load from file) / <code>loads_yaml</code> (load from string) convenience methods.</p>
 <p>See <a href="http://pyyaml.org/wiki/PyYAMLDocumentation">PyYaml documentation</a> for the various formatting arguments that you can use, they are the same than in the <code>yaml.dump</code> method. For example:</p>
-<div class="codehilite"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">dumps_yaml</span><span class="p">(</span><span class="n">default_flow_style</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">dumps_yaml</span><span class="p">(</span><span class="n">default_flow_style</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
 
 <span class="err">!</span><span class="n">yamlable</span><span class="o">/</span><span class="n">com</span><span class="o">.</span><span class="n">yamlable</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">Foo</span>
 <span class="n">a</span><span class="p">:</span> <span class="mi">1</span>
 <span class="n">b</span><span class="p">:</span> <span class="n">hello</span>
 </code></pre></div>
-
 <p>See <a href="./usage">Usage</a> for other possibilities of <code>yamlable</code>.</p>
 <h2 id="main-features-benefits">Main features / benefits<a class="headerlink" href="#main-features-benefits" title="Permanent link">&para;</a></h2>
 <ul>

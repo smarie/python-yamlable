@@ -20,7 +20,7 @@ except ImportError:
     pass
 
 import pytest
-from yaml import dump, load
+from yaml import dump, safe_load
 
 from yamlable import YamlAble, yaml_info
 
@@ -112,7 +112,7 @@ b: hello
     assert f == Foo.load_yaml(StringIO(y))
 
     # load pyyaml
-    assert f == load(y)
+    assert f == safe_load(y)
 
     # mapping, sequences and scalar
     y_map = """
@@ -200,7 +200,7 @@ b: hello
     assert f == FooLegacy.load_yaml(StringIO(y))
 
     # load pyyaml
-    assert f == load(y)
+    assert f == safe_load(y)
 
     assert enc
     assert dec
@@ -262,7 +262,7 @@ b: hello
 """
     assert dump(f, default_flow_style=False) == s
 
-    assert dump(load(dump(load(s))), default_flow_style=False) == s
+    assert dump(safe_load(dump(safe_load(s))), default_flow_style=False) == s
 
 
 def test_help_yaml_info():
@@ -357,4 +357,4 @@ b: hello
     assert f == FooValid.load_yaml(StringIO(y))
 
     # load pyyaml
-    assert f == load(y)
+    assert f == safe_load(y)

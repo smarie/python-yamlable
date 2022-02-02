@@ -5,7 +5,7 @@ try:  # python 3.5+
 except ImportError:
     pass
 
-from yaml import dump, load
+from yaml import dump, safe_load
 
 from yamlable import YamlCodec
 
@@ -86,8 +86,8 @@ c: what?
     assert dump(b, default_flow_style=False) == by
 
     # load pyyaml
-    assert f == load(fy)
-    assert b == load(by)
+    assert f == safe_load(fy)
+    assert b == safe_load(by)
 
     # load from sequence / scalar
     by_seq = """!mycodec/yaml.tests.Bar
@@ -96,10 +96,10 @@ c: what?
     by_scalar = "!mycodec/yaml.tests.Bar what?"
 
     with pytest.raises(NotImplementedError):
-        load(by_seq)
+        safe_load(by_seq)
 
     with pytest.raises(NotImplementedError):
-        load(by_scalar)
+        safe_load(by_scalar)
 
     class MyCodec2(MyCodec):
         @classmethod
@@ -123,5 +123,5 @@ c: what?
     # register the codec
     MyCodec2.register_with_pyyaml()
 
-    assert b == load(by_seq)
-    assert b == load(by_scalar)
+    assert b == safe_load(by_seq)
+    assert b == safe_load(by_scalar)

@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.1.0 - Now load objects from sequences and scalars too
+
+ - Objects (subclasses of `YamlAble` or `YamlObject2`) can now be loaded from both mappings, sequences and scalars. Codecs (subclasses of `YamlCodec`) can also support this feature. Fixes [#12](https://github.com/smarie/python-yamlable/issues/12)
+
 ### 1.0.4 - better type hinting (mypy)
 
  - Most type hints have been fixed, in particular for `@yaml_info`. Fixes [#11](https://github.com/smarie/python-yamlable/issues/11).

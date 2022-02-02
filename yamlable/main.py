@@ -233,7 +233,9 @@ def decode_yamlable(loader,
     for clazz in candidates:
         try:
             if clazz.is_yaml_tag_supported(yaml_tag):
-                return read_yaml_node_as_yamlobject(cls=clazz, loader=loader, node=node, yaml_tag=yaml_tag)  # type: ignore
+                return read_yaml_node_as_yamlobject(
+                    cls=clazz, loader=loader, node=node, yaml_tag=yaml_tag
+                )  # type: ignore
             else:
                 errors[clazz.__name__] = "yaml tag %r is not supported." % yaml_tag
         except Exception as e:
@@ -345,7 +347,7 @@ def _get_all_subclasses(typ,             # type: Type[T]
         try:
             if to is not typ and to not in result and issubclass(to, typ):  # is_subtype(to, typ, bound_typevars={}):
                 result.append(to)
-        except Exception:
+        except Exception:  # noqa
             # catching an error with is_subtype(Dict, Dict[str, int], bound_typevars={})
             pass
 

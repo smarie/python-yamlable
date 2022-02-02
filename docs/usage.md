@@ -4,6 +4,8 @@ You have seen in the [main page](./index) a small example to understand the conc
 
 ## `YamlCodec`
 
+### 1. Writing a codec class
+
 Sometimes you do not have the possibility to change the classes of the objects that you wish to encode/decode. In this case the solution is to write an independent codec, inheriting from `YamlCodec`. Once again this feature leverages the `multi_constructor` and `multi_representer` concepts available in the `PyYaml` internals, but with `YamlCodec` it becomes a bit easier to do.
 
 Let's assume that the following two classes are given and can not be modified:
@@ -84,12 +86,16 @@ class MyCodec(YamlCodec):
         return types_to_yaml_tags[type(obj)], vars(obj)
 ```
 
+### 2. Registering a codec
+
 When you codec has been defined, it needs to be registerd before being usable. You can specify with which `PyYaml` Loaders/Dumpers it should be registered, or use the default (all): 
 
 ```python
 # register the codec
 MyCodec.register_with_pyyaml()
 ```
+
+### 3. Using a codec
 
 Finally let's test that the codec works:
 
@@ -111,3 +117,10 @@ assert dump(b) == by
 assert f == load(fy)
 assert b == load(by)
 ```
+
+### 4. Sequences and scalars
+
+Objects can be loaded from sequences and scalars, in addition to dictionaries. To support this possibility, you simply need to fill the class methods:
+
+ - `from_yaml_sequence` for sequences
+ - `from_yaml_scalar` for scalars

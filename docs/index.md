@@ -26,6 +26,10 @@ In addition `yamlable` provides a way to create Yaml codecs for several object t
 
 ## Usage
 
+### 1. The (recommended) `YamlAble` way
+
+#### a. Creating the class
+
 Let's make a class yaml-able: we have to
 
  - inherit from `YamlAble`
@@ -38,7 +42,7 @@ from yamlable import yaml_info, YamlAble
 @yaml_info(yaml_tag_ns='com.yamlable.example')
 class Foo(YamlAble):
 
-    def __init__(self, a, b):
+    def __init__(self, a, b="hey"):
         """ Constructor """
         self.a = a
         self.b = b
@@ -66,6 +70,8 @@ That's it! Let's check that our class is correct and allows us to create instanc
 
 Foo - {'a': 1, 'b': 'hello'}
 ```
+
+#### b. Dumping and loading to/from YAML
 
 Now let's dump and load it using `pyyaml`:
 
@@ -105,7 +111,44 @@ a: 1
 b: hello
 ```
 
-See [Usage](./usage) for other possibilities of `yamlable`.
+#### c. Support for sequences and scalars
+
+Objects can also be loaded from YAML sequences:
+
+```python
+>>> print(yaml.safe_load("""
+!yamlable/com.yamlable.example.Foo
+- 0
+- hey
+"""))
+
+Foo - {'a': 0, 'b': 'hey'}
+```
+
+The default implementation of `__from_yaml_sequence__` (that you may wish to override in your subclass), is to call
+the constructor with the sequence contents as positional arguments.
+
+The same also works for scalars:
+
+```python
+>>> print(yaml.safe_load("""
+!yamlable/com.yamlable.example.Foo 0
+"""))
+
+Foo - {'a': "0", 'b': 'hey'}
+```
+
+The default implementation of `__from_yaml_scalar__` (that you may wish to override in your subclass), is to call
+the constructor with the scalar as first positional argument.
+
+!!! warning "Scalars are not resolved"
+    As can be seen in the above example, scalars are not auto-resolved when constructing an object from a scalar. So an
+    integer `0` is actually received as a string `"0"` by `from_yaml_scalar`.
+
+
+#### d. What if you can not modify the class ?
+
+See [Usage](./usage#yamlcodec) for another possibility offered by `yamlable`: creating a codec to handle YAML for several classes at once, typically classes that you cannot modify.
 
 
 ## Main features / benefits

@@ -29,7 +29,7 @@ from warnings import warn
 import six
 
 try:  # python 3.5+
-    from typing import Union, TypeVar, Dict, Any, Tuple
+    from typing import Union, TypeVar, Dict, Any, Sequence
 
     Y = TypeVar('Y', bound='AbstractYamlObject')
 
@@ -64,9 +64,9 @@ class AbstractYamlObject(six.with_metaclass(ABCMeta, object)):
     #                               " as yaml scalars." % type(self).__name__)
     #
     # def __to_yaml_sequence__(self):
-    #     # type: (...) -> Tuple[Any]
+    #     # type: (...) -> Sequence[Any]
     #     """
-    #     Implementors should transform the object into a tuple containing all information necessary to decode the
+    #     Implementors should transform the object into a Sequence containing all information necessary to decode the
     #     object as a YAML sequence in the future.
     #
     #     Default implementation raises an error.
@@ -118,12 +118,12 @@ class AbstractYamlObject(six.with_metaclass(ABCMeta, object)):
 
     @classmethod
     def __from_yaml_sequence__(cls,      # type: Type[Y]
-                               seq,      # type: Tuple[Any]
+                               seq,      # type: Sequence[Any]
                                yaml_tag  # type: str
                                ):
         # type: (...) -> Y
         """
-        Implementors should transform the given tuple (read from yaml by the pyYaml stack) into an object instance.
+        Implementors should transform the given Sequence (read from yaml by the pyYaml stack) into an object instance.
         The yaml tag associated to this object, read in the yaml document, is provided in parameter.
 
         Note that for YamlAble and YamlObject2 subclasses, if this method is called the yaml tag will already have
@@ -288,7 +288,7 @@ def read_yaml_node_as_dict(loader, node):
 
 
 def read_yaml_node_as_sequence(loader, node):
-    # type: (...) -> Tuple
+    # type: (...) -> Sequence
     """
     Utility method to read a yaml node into a sequence
 

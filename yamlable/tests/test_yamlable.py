@@ -58,9 +58,12 @@ def test_yamlable():
     class Foo(YamlAble):
         # __yaml_tag_suffix__ = 'foo'   not needed: we used @yaml_info
 
-        def __init__(self, a, b):
+        def __init__(self, a, b="hey"):
             self.a = a
             self.b = b
+
+        def __repr__(self):
+            return "Foo(a=%r,b=%r)" % (self.a, self.b)
 
         def __eq__(self, other):
             return vars(self) == vars(other)
@@ -110,6 +113,25 @@ b: hello
 
     # load pyyaml
     assert f == load(y)
+
+    # mapping, sequences and scalar
+    y_map = """
+!yamlable/yaml.tests.Foo
+a: 1
+"""
+    y_seq = """
+!yamlable/yaml.tests.Foo
+- 1
+"""
+    y_scalar = """
+!yamlable/yaml.tests.Foo
+1
+"""
+    assert Foo.loads_yaml(y_map) == Foo(a=1)
+    assert Foo.loads_yaml(y_seq) == Foo(a=1)
+
+    # Important: if we provide a scalar, there will not be any auto-resolver
+    assert Foo.loads_yaml(y_scalar) == Foo(a="1")
 
 
 def test_yamlable_legacy_method_names():

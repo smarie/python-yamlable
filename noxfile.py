@@ -1,6 +1,5 @@
 from itertools import product
 from json import dumps
-
 import logging
 
 import nox  # noqa
@@ -140,10 +139,10 @@ def flake8(session: PowerSession):
     """Launch flake8 qualimetry."""
 
     session.install("-r", str(Folders.ci_tools / "flake8-requirements.txt"))
-    session.install("genbadge[flake8]")
-    session.run2("pip install -e .[flake8]")
+    session.run2("pip install .")
 
     rm_folder(Folders.flake8_reports)
+    Folders.flake8_reports.mkdir(parents=True, exist_ok=True)
     rm_file(Folders.flake8_intermediate_file)
 
     # Options are set in `setup.cfg` file

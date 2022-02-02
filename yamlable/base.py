@@ -6,6 +6,8 @@
 from abc import ABCMeta
 from collections import OrderedDict
 
+from yaml import ScalarNode, SequenceNode, MappingNode
+
 try:
     # Python 2 only:
     from StringIO import StringIO as _StringIO  # type: ignore  # noqa
@@ -27,7 +29,7 @@ from warnings import warn
 import six
 
 try:  # python 3.5+
-    from typing import Union, TypeVar, Dict, Any
+    from typing import Union, TypeVar, Dict, Any, Sequence
 
     Y = TypeVar('Y', bound='AbstractYamlObject')
 
@@ -49,6 +51,30 @@ class AbstractYamlObject(six.with_metaclass(ABCMeta, object)):
     Default implementation uses vars(self) and cls(**dct), but subclasses can override.
     """
 
+    # def __to_yaml_scalar__(self):
+    #     # type: (...) -> Any
+    #     """
+    #     Implementors should transform the object into a scalar containing all information necessary to decode the
+    #     object as a YAML scalar in the future.
+    #
+    #     Default implementation raises an error.
+    #     :return:
+    #     """
+    #     raise NotImplementedError("Please override `__to_yaml_scalar__` if you wish to dump instances of `%s`"
+    #                               " as yaml scalars." % type(self).__name__)
+    #
+    # def __to_yaml_sequence__(self):
+    #     # type: (...) -> Sequence[Any]
+    #     """
+    #     Implementors should transform the object into a Sequence containing all information necessary to decode the
+    #     object as a YAML sequence in the future.
+    #
+    #     Default implementation raises an error.
+    #     :return:
+    #     """
+    #     raise NotImplementedError("Please override `__to_yaml_sequence__` if you wish to dump instances of `%s`"
+    #                               " as yaml sequences." % type(self).__name__)
+
     def __to_yaml_dict__(self):
         # type: (...) -> Dict[str, Any]
         """
@@ -66,6 +92,52 @@ class AbstractYamlObject(six.with_metaclass(ABCMeta, object)):
 
         # Default: return vars(self) (Note: no need to make a copy, pyyaml does not modify it)
         return vars(self)
+
+    @classmethod
+    def __from_yaml_scalar__(cls,      # type: Type[Y]
+                             scalar,   # type: Any
+                             yaml_tag  # type: str
+                             ):
+        # type: (...) -> Y
+        """
+        Implementors should transform the given scalar (read from yaml by the pyYaml stack) into an object instance.
+        The yaml tag associated to this object, read in the yaml document, is provided in parameter.
+
+        Note that for YamlAble and YamlObject2 subclasses, if this method is called the yaml tag will already have
+        been checked so implementors do not have to validate it.
+
+        Default implementation returns cls(scalar)
+
+        :param scalar: the yaml scalar
+        :param yaml_tag: the yaml schema id that was used for encoding the object (it has already been checked
+            against is_json_schema_id_supported)
+        :return:
+        """
+        # Default: call constructor with positional arguments
+        return cls(scalar)  # type: ignore
+
+    @classmethod
+    def __from_yaml_sequence__(cls,      # type: Type[Y]
+                               seq,      # type: Sequence[Any]
+                               yaml_tag  # type: str
+                               ):
+        # type: (...) -> Y
+        """
+        Implementors should transform the given Sequence (read from yaml by the pyYaml stack) into an object instance.
+        The yaml tag associated to this object, read in the yaml document, is provided in parameter.
+
+        Note that for YamlAble and YamlObject2 subclasses, if this method is called the yaml tag will already have
+        been checked so implementors do not have to validate it.
+
+        Default implementation returns cls(*seq)
+
+        :param seq: the yaml sequence
+        :param yaml_tag: the yaml schema id that was used for encoding the object (it has already been checked
+            against is_json_schema_id_supported)
+        :return:
+        """
+        # Default: call constructor with positional arguments
+        return cls(*seq)  # type: ignore
 
     @classmethod
     def __from_yaml_dict__(cls,      # type: Type[Y]
@@ -200,6 +272,7 @@ NONE_IGNORE_CHECKS = None
 
 
 def read_yaml_node_as_dict(loader, node):
+    # type: (...) -> OrderedDict
     """
     Utility method to read a yaml node into a dictionary
 
@@ -207,7 +280,64 @@ def read_yaml_node_as_dict(loader, node):
     :param node:
     :return:
     """
-    loader.flatten_mapping(node)
-    pairs = loader.construct_pairs(node, deep=True)  # 'deep' allows the construction to be complete (inner seq...)
+    # loader.flatten_mapping(node)
+    # pairs = loader.construct_pairs(node, deep=True)  # 'deep' allows the construction to be complete (inner seq...)
+    pairs = loader.construct_mapping(node, deep=True)  # 'deep' allows the construction to be complete (inner seq...)
     constructor_args = OrderedDict(pairs)
     return constructor_args
+
+
+def read_yaml_node_as_sequence(loader, node):
+    # type: (...) -> Sequence
+    """
+    Utility method to read a yaml node into a sequence
+
+    :param loader:
+    :param node:
+    :return:
+    """
+    seq = loader.construct_sequence(node, deep=True)  # 'deep' allows the construction to be complete (inner seq...)
+    return seq
+
+
+def read_yaml_node_as_scalar(loader, node):
+    # type: (...) -> Any
+    """
+    Utility method to read a yaml node into a sequence
+
+    :param loader:
+    :param node:
+    :return:
+    """
+    value = loader.construct_scalar(node)
+    return value
+
+
+def read_yaml_node_as_yamlobject(
+    cls,      # type: Type[AbstractYamlObject]
+    loader,
+    node,     # type: MappingNode
+    yaml_tag  # type: str
+):
+    # type: (...) -> AbstractYamlObject
+    """
+    Default implementation: loads the node as a dictionary and calls __from_yaml_dict__ with this dictionary
+
+    :param loader:
+    :param node:
+    :return:
+    """
+    if isinstance(node, ScalarNode):
+        constructor_args = read_yaml_node_as_scalar(loader, node)
+        return cls.__from_yaml_scalar__(constructor_args, yaml_tag=yaml_tag)  # type: ignore
+
+    elif isinstance(node, SequenceNode):
+        constructor_args = read_yaml_node_as_sequence(loader, node)
+        return cls.__from_yaml_sequence__(constructor_args, yaml_tag=yaml_tag)  # type: ignore
+
+    elif isinstance(node, MappingNode):
+        constructor_args = read_yaml_node_as_dict(loader, node)
+        return cls.__from_yaml_dict__(constructor_args, yaml_tag=yaml_tag)  # type: ignore
+
+    else:
+        raise TypeError("Unknown type of yaml node: %r. Please report this to `yamlable` project." % type(node))

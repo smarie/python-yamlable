@@ -1,3 +1,5 @@
+import pytest
+
 try:  # python 3.5+
     from typing import Tuple, Any, Iterable, Dict
 except ImportError:
@@ -86,3 +88,40 @@ c: what?
     # load pyyaml
     assert f == load(fy)
     assert b == load(by)
+
+    # load from sequence / scalar
+    by_seq = """!mycodec/yaml.tests.Bar
+- what?
+"""
+    by_scalar = "!mycodec/yaml.tests.Bar what?"
+
+    with pytest.raises(NotImplementedError):
+        load(by_seq)
+
+    with pytest.raises(NotImplementedError):
+        load(by_scalar)
+
+    class MyCodec2(MyCodec):
+        @classmethod
+        def from_yaml_sequence(cls,
+                               yaml_tag_suffix,  # type: str
+                               seq,              # type: Sequence[Any]
+                               **kwargs):
+            # type: (...) -> Any
+            typ = yaml_tags_to_types[yaml_tag_suffix]
+            return typ(*seq)
+
+        @classmethod
+        def from_yaml_scalar(cls,
+                             yaml_tag_suffix,  # type: str
+                             scalar,           # type: Any
+                             **kwargs):
+            # type: (...) -> Any
+            typ = yaml_tags_to_types[yaml_tag_suffix]
+            return typ(scalar)
+
+    # register the codec
+    MyCodec2.register_with_pyyaml()
+
+    assert b == load(by_seq)
+    assert b == load(by_scalar)

@@ -20,7 +20,7 @@ except ImportError:
 
 from yaml import YAMLObjectMetaclass, YAMLObject, SafeLoader, MappingNode
 
-from yamlable.base import AbstractYamlObject, read_yaml_node_as_dict
+from yamlable.base import AbstractYamlObject, read_yaml_node_as_yamlobject
 
 
 class YAMLObjectMetaclassStrict(YAMLObjectMetaclass):
@@ -106,11 +106,10 @@ class YamlObject2(six.with_metaclass(ABCYAMLMeta, AbstractYamlObject, YAMLObject
                   ):
         # type: (...) -> YamlObject2
         """
-        Default implementation: loads the node as a dictionary and calls __from_yaml_dict__ with this dictionary
+        Default implementation: relies on AbstractYamlObject API to load the node as a dictionary/sequence/scalar
 
         :param loader:
         :param node:
         :return:
         """
-        constructor_args = read_yaml_node_as_dict(loader, node)
-        return cls.__from_yaml_dict__(constructor_args, yaml_tag=cls.yaml_tag)  # type: ignore
+        return read_yaml_node_as_yamlobject(cls=cls, loader=loader, node=node, yaml_tag=cls.yaml_tag)

@@ -9,7 +9,8 @@ from abc import abstractmethod, ABCMeta
 import six
 
 try:  # python 3.5+
-    from typing import TypeVar, Callable, Iterable, Any, Tuple, Dict, Set, List
+    from typing import TypeVar, Callable, Iterable, Any, Tuple, Dict, Set, List, Sequence
+
     YA = TypeVar('YA', bound='YamlAble')
     T = TypeVar('T')
 except ImportError:
@@ -20,9 +21,10 @@ try:  # python 3.5.4+
 except ImportError:
     pass  # normal for old versions of typing
 
-from yaml import Loader, SafeLoader, Dumper, SafeDumper, MappingNode
+from yaml import Loader, SafeLoader, Dumper, SafeDumper, MappingNode, ScalarNode, SequenceNode
 
-from yamlable.base import AbstractYamlObject, read_yaml_node_as_dict
+from yamlable.base import AbstractYamlObject, read_yaml_node_as_yamlobject, read_yaml_node_as_dict, \
+    read_yaml_node_as_sequence, read_yaml_node_as_scalar
 from yamlable.yaml_objects import YamlObject2
 
 
@@ -231,12 +233,15 @@ def decode_yamlable(loader,
     for clazz in candidates:
         try:
             if clazz.is_yaml_tag_supported(yaml_tag):
-                constructor_args = read_yaml_node_as_dict(loader, node)
-                return clazz.__from_yaml_dict__(constructor_args, yaml_tag=yaml_tag)
+                return read_yaml_node_as_yamlobject(
+                    cls=clazz, loader=loader, node=node, yaml_tag=yaml_tag
+                )  # type: ignore
+            else:
+                errors[clazz.__name__] = "yaml tag %r is not supported." % yaml_tag
         except Exception as e:
             errors[clazz.__name__] = e
 
-    raise TypeError("No YamlAble subclass found able to decode object !yamlable/" + yaml_tag + ". Tried classes: "
+    raise TypeError("No YamlAble subclass found able to decode object '!yamlable/" + yaml_tag + "'. Tried classes: "
                     + str(candidates) + ". Caught errors: " + str(errors) + ". "
                     "Please check the value of <cls>.__yaml_tag_suffix__ on these classes. Note that this value may be "
                     "set using @yaml_info() so help(yaml_info) might help too.")
@@ -342,7 +347,7 @@ def _get_all_subclasses(typ,             # type: Type[T]
         try:
             if to is not typ and to not in result and issubclass(to, typ):  # is_subtype(to, typ, bound_typevars={}):
                 result.append(to)
-        except Exception:
+        except Exception:  # noqa
             # catching an error with is_subtype(Dict, Dict[str, int], bound_typevars={})
             pass
 
@@ -403,8 +408,22 @@ class YamlCodec(six.with_metaclass(ABCMeta, object)):
         :return:
         """
         if cls.is_yaml_tag_supported(yaml_tag_suffix):
-            constructor_args = read_yaml_node_as_dict(loader, node)
-            return cls.from_yaml_dict(yaml_tag_suffix, constructor_args, **kwargs)
+            # Note: same as in read_yaml_node_as_yamlobject but different yaml tag handling so code copy
+
+            if isinstance(node, ScalarNode):
+                constructor_args = read_yaml_node_as_scalar(loader, node)
+                return cls.from_yaml_scalar(yaml_tag_suffix, constructor_args, **kwargs)  # type: ignore
+
+            elif isinstance(node, SequenceNode):
+                constructor_args = read_yaml_node_as_sequence(loader, node)
+                return cls.from_yaml_sequence(yaml_tag_suffix, constructor_args, **kwargs)  # type: ignore
+
+            elif isinstance(node, MappingNode):
+                constructor_args = read_yaml_node_as_dict(loader, node)
+                return cls.from_yaml_dict(yaml_tag_suffix, constructor_args, **kwargs)  # type: ignore
+
+            else:
+                raise TypeError("Unknown type of yaml node: %r. Please report this to `yamlable` project." % type(node))
 
     @classmethod
     @abstractmethod
@@ -420,6 +439,40 @@ class YamlCodec(six.with_metaclass(ABCMeta, object)):
         """
 
     @classmethod
+    def from_yaml_scalar(cls,
+                         yaml_tag_suffix,  # type: str
+                         scalar,           # type: Any
+                         **kwargs):
+        # type: (...) -> Any
+        """
+        Implementing classes should create an object corresponding to the given yaml tag, using the given YAML scalar.
+
+        :param scalar:
+        :param yaml_tag_suffix:
+        :param kwargs: keyword arguments coming from pyyaml, not sure what you will find here.
+        :return:
+        """
+        raise NotImplementedError("This codec does not support loading objects from scalar. Please override "
+                                  "`from_yaml_scalar` to support this feature.")
+
+    @classmethod
+    def from_yaml_sequence(cls,
+                           yaml_tag_suffix,  # type: str
+                           seq,              # type: Sequence[Any]
+                           **kwargs):
+        # type: (...) -> Any
+        """
+        Implementing classes should create an object corresponding to the given yaml tag, using the given YAML sequence.
+
+        :param seq:
+        :param yaml_tag_suffix:
+        :param kwargs: keyword arguments coming from pyyaml, not sure what you will find here.
+        :return:
+        """
+        raise NotImplementedError("This codec does not support loading objects from sequence. Please override "
+                                  "`from_yaml_sequence` to support this feature.")
+
+    @classmethod
     @abstractmethod
     def from_yaml_dict(cls,
                        yaml_tag_suffix,  # type: str
@@ -427,8 +480,7 @@ class YamlCodec(six.with_metaclass(ABCMeta, object)):
                        **kwargs):
         # type: (...) -> Any
         """
-        Implementing classes should create an object corresponding to the given yaml tag, using the given constructor
-        arguments.
+        Implementing classes should create an object corresponding to the given yaml tag, using the given YAML mapping.
 
         :param dct:
         :param yaml_tag_suffix:

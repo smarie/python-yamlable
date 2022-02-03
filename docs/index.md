@@ -125,7 +125,7 @@ Objects can also be loaded from YAML sequences:
 Foo - {'a': 0, 'b': 'hey'}
 ```
 
-The default implementation of `__from_yaml_sequence__` (that you may wish to override in your subclass), is to call
+The default implementation of `__from_yaml_list__` (that you may wish to override in your subclass), is to call
 the constructor with the sequence contents as positional arguments.
 
 The same also works for scalars:

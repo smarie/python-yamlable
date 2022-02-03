@@ -122,5 +122,5 @@ assert b == load(by)
 
 Objects can be loaded from sequences and scalars, in addition to dictionaries. To support this possibility, you simply need to fill the class methods:
 
- - `from_yaml_sequence` for sequences
+ - `from_yaml_list` for sequences
  - `from_yaml_scalar` for scalars

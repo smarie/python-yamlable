@@ -103,10 +103,10 @@ c: what?
 
     class MyCodec2(MyCodec):
         @classmethod
-        def from_yaml_sequence(cls,
-                               yaml_tag_suffix,  # type: str
-                               seq,              # type: Sequence[Any]
-                               **kwargs):
+        def from_yaml_list(cls,
+                           yaml_tag_suffix,  # type: str
+                           seq,              # type: Sequence[Any]
+                           **kwargs):
             # type: (...) -> Any
             typ = yaml_tags_to_types[yaml_tag_suffix]
             return typ(*seq)

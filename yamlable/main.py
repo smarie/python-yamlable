@@ -416,7 +416,7 @@ class YamlCodec(six.with_metaclass(ABCMeta, object)):
 
             elif isinstance(node, SequenceNode):
                 constructor_args = read_yaml_node_as_sequence(loader, node)
-                return cls.from_yaml_sequence(yaml_tag_suffix, constructor_args, **kwargs)  # type: ignore
+                return cls.from_yaml_list(yaml_tag_suffix, constructor_args, **kwargs)  # type: ignore
 
             elif isinstance(node, MappingNode):
                 constructor_args = read_yaml_node_as_dict(loader, node)
@@ -456,10 +456,10 @@ class YamlCodec(six.with_metaclass(ABCMeta, object)):
                                   "`from_yaml_scalar` to support this feature.")
 
     @classmethod
-    def from_yaml_sequence(cls,
-                           yaml_tag_suffix,  # type: str
-                           seq,              # type: Sequence[Any]
-                           **kwargs):
+    def from_yaml_list(cls,
+                       yaml_tag_suffix,  # type: str
+                       seq,              # type: Sequence[Any]
+                       **kwargs):
         # type: (...) -> Any
         """
         Implementing classes should create an object corresponding to the given yaml tag, using the given YAML sequence.
@@ -470,7 +470,7 @@ class YamlCodec(six.with_metaclass(ABCMeta, object)):
         :return:
         """
         raise NotImplementedError("This codec does not support loading objects from sequence. Please override "
-                                  "`from_yaml_sequence` to support this feature.")
+                                  "`from_yaml_list` to support this feature.")
 
     @classmethod
     @abstractmethod

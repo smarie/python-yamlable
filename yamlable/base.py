@@ -63,7 +63,7 @@ class AbstractYamlObject(six.with_metaclass(ABCMeta, object)):
     #     raise NotImplementedError("Please override `__to_yaml_scalar__` if you wish to dump instances of `%s`"
     #                               " as yaml scalars." % type(self).__name__)
     #
-    # def __to_yaml_sequence__(self):
+    # def __to_yaml_list__(self):
     #     # type: (...) -> Sequence[Any]
     #     """
     #     Implementors should transform the object into a Sequence containing all information necessary to decode the
@@ -72,7 +72,7 @@ class AbstractYamlObject(six.with_metaclass(ABCMeta, object)):
     #     Default implementation raises an error.
     #     :return:
     #     """
-    #     raise NotImplementedError("Please override `__to_yaml_sequence__` if you wish to dump instances of `%s`"
+    #     raise NotImplementedError("Please override `__to_yaml_list__` if you wish to dump instances of `%s`"
     #                               " as yaml sequences." % type(self).__name__)
 
     def __to_yaml_dict__(self):
@@ -117,10 +117,10 @@ class AbstractYamlObject(six.with_metaclass(ABCMeta, object)):
         return cls(scalar)  # type: ignore
 
     @classmethod
-    def __from_yaml_sequence__(cls,      # type: Type[Y]
-                               seq,      # type: Sequence[Any]
-                               yaml_tag  # type: str
-                               ):
+    def __from_yaml_list__(cls,      # type: Type[Y]
+                           seq,      # type: Sequence[Any]
+                           yaml_tag  # type: str
+                           ):
         # type: (...) -> Y
         """
         Implementors should transform the given Sequence (read from yaml by the pyYaml stack) into an object instance.
@@ -333,7 +333,7 @@ def read_yaml_node_as_yamlobject(
 
     elif isinstance(node, SequenceNode):
         constructor_args = read_yaml_node_as_sequence(loader, node)
-        return cls.__from_yaml_sequence__(constructor_args, yaml_tag=yaml_tag)  # type: ignore
+        return cls.__from_yaml_list__(constructor_args, yaml_tag=yaml_tag)  # type: ignore
 
     elif isinstance(node, MappingNode):
         constructor_args = read_yaml_node_as_dict(loader, node)

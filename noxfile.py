@@ -159,7 +159,7 @@ def docs(session: PowerSession):
 
     # we need to install self for the doc gallery examples to work
     session.run2("pip install .")
-    session.install_reqs(phase="docs", phase_reqs=["mkdocs-material", "mkdocs", "pymdown-extensions", "pygments", "mkdocs-gallery"])
+    session.install_reqs(phase="docs", phase_reqs=["mkdocs-material", "mkdocs", "pymdown-extensions", "pygments", "mkdocs-gallery", "pillow"])
 
     if session.posargs:
         # use posargs instead of "serve"
@@ -174,7 +174,7 @@ def publish(session: PowerSession):
 
     # we need to install self for the doc gallery examples to work
     session.run2("pip install .")
-    session.install_reqs(phase="mkdocs", phase_reqs=["mkdocs-material", "mkdocs", "pymdown-extensions", "pygments", "mkdocs-gallery"])
+    session.install_reqs(phase="mkdocs", phase_reqs=["mkdocs-material", "mkdocs", "pymdown-extensions", "pygments", "mkdocs-gallery", "pillow"])
 
     # possibly rebuild the docs in a static way (mkdocs serve does not build locally)
     session.run2("mkdocs build")

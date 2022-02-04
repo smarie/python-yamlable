@@ -26,136 +26,14 @@ In addition `yamlable` provides a way to create Yaml codecs for several object t
 
 ## Usage
 
-### 1. The (recommended) `YamlAble` way
-
-#### a. Creating the class
-
-Let's make a class yaml-able: we have to
-
- - inherit from `YamlAble`
- - decorate it with the `@yaml_info` annotation to declare the associated yaml tag
- - *optionally* implement `__from_yaml_dict__` (class method called during decoding) and/or `__to_yaml_dict__` (instance method called during encoding) if we wish to have control on the process, for example to only dump part of the attributes or perform some custom instance creation. Note that default implementation relies on `vars(self)` for dumping and on `cls(**dct)` for loading.
- 
-```python
-from yamlable import yaml_info, YamlAble
-
-@yaml_info(yaml_tag_ns='com.yamlable.example')
-class Foo(YamlAble):
-
-    def __init__(self, a, b="hey"):
-        """ Constructor """
-        self.a = a
-        self.b = b
-        self.irrelevant = 37
-
-    def __str__(self):
-        """ String representation for prints """
-        return "Foo - " + str(dict(a=self.a, b=self.b))
-    
-    def __to_yaml_dict__(self):
-        """ This optional method is called when you call yaml.dump()"""
-        return {'a': self.a, 'b': self.b}
-
-    @classmethod
-    def __from_yaml_dict__(cls, dct, yaml_tag):
-        """ This optional method is called when you call yaml.load()"""
-        return Foo(dct['a'], dct['b'])
-```
-
-That's it! Let's check that our class is correct and allows us to create instances:
-
-```python
->>> f = Foo(1, 'hello')
->>> print(f)
-
-Foo - {'a': 1, 'b': 'hello'}
-```
-
-#### b. Dumping and loading to/from YAML
-
-Now let's dump and load it using `pyyaml`:
-
-```python
->>> import yaml
->>> print(yaml.dump(f))
-
-!yamlable/com.yamlable.example.Foo {a: 1, b: hello}
-```
-
-```python
->>> print(yaml.safe_load("!yamlable/com.yamlable.example.Foo {a: 0, b: hey}"))
-
-Foo - {'a': 0, 'b': 'hey'}
-```
-
-For more general cases where your object is embedded in a more complex structure for example, it will work as expected:
-
-```python
->>> d = {'foo': f, 'foo2': 12}
->>> print(yaml.safe_dump(d))
-
-foo: !yamlable/com.yamlable.example.Foo {a: 1, b: hello}
-foo2: 12
-```
-
-
-In addition, the object directly offers the `dump_yaml` (dumping to file) / `dumps_yaml` (dumping to string) convenience methods, and the class directly offers the `load_yaml` (load from file) / `loads_yaml` (load from string) convenience methods.
-
-See [PyYaml documentation](http://pyyaml.org/wiki/PyYAMLDocumentation) for the various formatting arguments that you can use, they are the same than in the `yaml.dump` method. For example:
-
-```python
->>> print(f.dumps_yaml(default_flow_style=False))
-
-!yamlable/com.yamlable.example.Foo
-a: 1
-b: hello
-```
-
-#### c. Support for sequences and scalars
-
-Objects can also be loaded from YAML sequences:
-
-```python
->>> print(yaml.safe_load("""
-!yamlable/com.yamlable.example.Foo
-- 0
-- hey
-"""))
-
-Foo - {'a': 0, 'b': 'hey'}
-```
-
-The default implementation of `__from_yaml_list__` (that you may wish to override in your subclass), is to call
-the constructor with the sequence contents as positional arguments.
-
-The same also works for scalars:
-
-```python
->>> print(yaml.safe_load("""
-!yamlable/com.yamlable.example.Foo 0
-"""))
-
-Foo - {'a': "0", 'b': 'hey'}
-```
-
-The default implementation of `__from_yaml_scalar__` (that you may wish to override in your subclass), is to call
-the constructor with the scalar as first positional argument.
-
-!!! warning "Scalars are not resolved"
-    As can be seen in the above example, scalars are not auto-resolved when constructing an object from a scalar. So an
-    integer `0` is actually received as a string `"0"` by `from_yaml_scalar`.
-
-
-#### d. What if you can not modify the class ?
-
-See [Usage](./usage#yamlcodec) for another possibility offered by `yamlable`: creating a codec to handle YAML for several classes at once, typically classes that you cannot modify.
-
+See the [usage examples gallery](./generated/gallery).
 
 ## Main features / benefits
 
  * Add yaml-ability to any class easily through inheritance without metaclass (as opposed to `YamlObject`) and without knowledge of internal PyYaml loader/dumper logic.
- * Write codecs to support several types at a time with `YamlCodec`
- * If you absolutely wish to use PyYaml's `YamlObject` for some reason, you can use `YamlObject2` as an alternative to `YamlAble`. But it comes with the metaclass, like `YamlObject`.
+ * Write codecs to support several types at a time and support classes that can't be modified, with `YamlCodec`
+ * Supports loading from mappings, but also sequences and scalars. Dumping is always done as a mapping.
+ * Alternate `YamlObject2` possibility, inheriting from pyyaml `YamlObject`.
 
 ## See Also
 

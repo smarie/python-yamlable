@@ -27,7 +27,7 @@ ENVS = {
 }
 
 # set the default activated sessions, minimal for CI
-nox.options.sessions = ["tests", "flake8"]  # , "docs", "gh_pages"
+nox.options.sessions = ["tests", "flake8", "docs"]  # , "docs", "gh_pages"
 nox.options.reuse_existing_virtualenvs = True  # this can be done using -r
 # if platform.system() == "Windows":  >> always use this for better control
 nox.options.default_venv_backend = "conda"
@@ -157,7 +157,9 @@ def flake8(session: PowerSession):
 def docs(session: PowerSession):
     """Generates the doc and serves it on a local http server. Pass '-- build' to build statically instead."""
 
-    session.install_reqs(phase="docs", phase_reqs=["mkdocs-material", "mkdocs", "pymdown-extensions", "pygments"])
+    # we need to install self for the doc gallery examples to work
+    session.run2("pip install .")
+    session.install_reqs(phase="docs", phase_reqs=["mkdocs-material", "mkdocs", "pymdown-extensions", "pygments", "mkdocs-gallery"])
 
     if session.posargs:
         # use posargs instead of "serve"
@@ -170,17 +172,19 @@ def docs(session: PowerSession):
 def publish(session: PowerSession):
     """Deploy the docs+reports on github pages. Note: this rebuilds the docs"""
 
-    session.install_reqs(phase="mkdocs", phase_reqs=["mkdocs-material", "mkdocs", "pymdown-extensions", "pygments"])
+    # we need to install self for the doc gallery examples to work
+    session.run2("pip install .")
+    session.install_reqs(phase="mkdocs", phase_reqs=["mkdocs-material", "mkdocs", "pymdown-extensions", "pygments", "mkdocs-gallery"])
 
     # possibly rebuild the docs in a static way (mkdocs serve does not build locally)
-    session.run2("mkdocs build -f ./docs/mkdocs.yml")
+    session.run2("mkdocs build")
 
     # check that the doc has been generated with coverage
     if not Folders.site_reports.exists():
         raise ValueError("Test reports have not been built yet. Please run 'nox -s tests-3.7' first")
 
     # publish the docs
-    session.run2("mkdocs gh-deploy -f ./docs/mkdocs.yml")
+    session.run2("mkdocs gh-deploy")
 
     # publish the coverage - now in github actions only
     # session.install_reqs(phase="codecov", phase_reqs=["codecov", "keyring"])

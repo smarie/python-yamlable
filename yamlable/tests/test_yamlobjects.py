@@ -1,13 +1,13 @@
 from copy import copy
 try:  # python 3.5+
     from typing import Dict, Any
-    from yamlable import Y, yaml_info
+    from yamlable import Y
 except ImportError:
     pass
 
 import pytest
 
-from yamlable import YamlObject2
+from yamlable import YamlObject2, yaml_info
 
 
 def test_yamlobject_incomplete_description():

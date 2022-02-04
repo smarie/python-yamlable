@@ -197,10 +197,14 @@ def yaml_info_decorate(cls,               # type: Type[YA]
         raise ValueError("One non-None `yaml_tag` or `yaml_tag_ns` must be provided.")
 
     if issubclass(cls, YamlObject2):
-        if not yaml_tag.startswith('!'):
-            raise ValueError("When extending YamlObject2, the `yaml_tag` field should contain the full yaml tag, "
-                             "and should therefore start with !")
-        cls.yaml_tag = yaml_tag
+        # Do not support this, because the `YamlObject` metaclass needs the tag to be present BEFORE this decorator is
+        # even called. So if we are here, it means that we are trying to override a yaml_tag that was already registered
+        # with pyyaml. Too late!
+        raise TypeError("This is not supported")
+        # if not yaml_tag.startswith('!'):
+        #     raise ValueError("When extending YamlObject2, the `yaml_tag` field should contain the full yaml tag, "
+        #                      "and should therefore start with !")
+        # cls.yaml_tag = yaml_tag
 
     elif issubclass(cls, YamlAble):
         if yaml_tag.startswith('!'):

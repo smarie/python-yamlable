@@ -1,7 +1,7 @@
 from copy import copy
 try:  # python 3.5+
     from typing import Dict, Any
-    from yamlable import Y
+    from yamlable import Y, yaml_info
 except ImportError:
     pass
 
@@ -84,6 +84,14 @@ def test_abstract_parent_error():
         # # dump
         # with pytest.raises(NotImplementedError):
         #     e.dumps_yaml()
+
+
+def test_decorator():
+    """Test that the decorator can not be used when subclassing CustomFoo3"""
+    with pytest.raises(TypeError):
+        @yaml_info("!hello_dear")
+        class CustomFoo3(YamlObject2):
+            pass
 
 
 def test_abstract_parent():

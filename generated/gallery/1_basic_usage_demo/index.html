@@ -1,0 +1,881 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.9">
+    
+    
+      
+        <title>Yaml-able classes - yamlable</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.2b4465f4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.e6a45f82.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../sg_gallery-rendered-html.css">
+    
+      <link rel="stylesheet" href="../../../sg_gallery.css">
+    
+      <link rel="stylesheet" href="../../../sg_gallery-binder.css">
+    
+      <link rel="stylesheet" href="../../../sg_gallery-dataframe.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#yaml-able-classes" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="yamlable" class="md-header__button md-logo" aria-label="yamlable" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            yamlable
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Yaml-able classes
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/smarie/python-yamlable/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="yamlable" class="md-nav__button md-logo" aria-label="yamlable" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    yamlable
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/smarie/python-yamlable/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
+      
+      
+      
+        
+          
+            
+          
+        
+          
+        
+          
+        
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../">Usage examples</a>
+          
+            <label for="__nav_2">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Usage examples" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Usage examples
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Yaml-able classes
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Yaml-able classes
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-basics" class="md-nav__link">
+    1. Basics
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-customization" class="md-nav__link">
+    2. Customization
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Customization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-dumperloader" class="md-nav__link">
+    a. dumper/loader
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-yaml-tag" class="md-nav__link">
+    b. YAML tag
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-alternate-way-yamlobject2" class="md-nav__link">
+    3. Alternate way: YamlObject2
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-support-for-sequences-and-scalars" class="md-nav__link">
+    4. Support for sequences and scalars
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../2_codecs_demo/" class="md-nav__link">
+        Writing Codecs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../changelog/" class="md-nav__link">
+        Changelog
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-basics" class="md-nav__link">
+    1. Basics
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-customization" class="md-nav__link">
+    2. Customization
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Customization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-dumperloader" class="md-nav__link">
+    a. dumper/loader
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-yaml-tag" class="md-nav__link">
+    b. YAML tag
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-alternate-way-yamlobject2" class="md-nav__link">
+    3. Alternate way: YamlObject2
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-support-for-sequences-and-scalars" class="md-nav__link">
+    4. Support for sequences and scalars
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+<a href="https://github.com/smarie/python-yamlable/edit/main/docs/examples/1_basic_usage_demo.py" title="Edit this page" class="md-content__button md-icon">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+</a>
+
+
+<!--
+ DO NOT EDIT.
+ THIS FILE WAS AUTOMATICALLY GENERATED BY mkdocs-gallery.
+ TO MAKE CHANGES, EDIT THE SOURCE PYTHON FILE:
+ "docs/examples/1_basic_usage_demo.py"
+ LINE NUMBERS ARE GIVEN BELOW.
+-->
+
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Click <a href="#download_links">here</a>
+to download the full example code</p>
+</div>
+<h1 id="yaml-able-classes">Yaml-able classes<a class="headerlink" href="#yaml-able-classes" title="Permanent link">&para;</a></h1>
+<p>Let's make a class yaml-aware so that instances can be loaded from YAML and dumped to
+YAML.</p>
+<h2 id="1-basics">1. Basics<a class="headerlink" href="#1-basics" title="Permanent link">&para;</a></h2>
+<p>To make a class yaml-able, we have to</p>
+<ul>
+<li>inherit from <code>YamlAble</code></li>
+<li>decorate it with the <code>@yaml_info</code> annotation to declare the associated yaml tag</li>
+</ul>
+<!-- GENERATED FROM PYTHON SOURCE LINES 20-35 -->
+
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">yamlable</span> <span class="kn">import</span> <span class="n">yaml_info</span><span class="p">,</span> <span class="n">YamlAble</span>
+
+<span class="nd">@yaml_info</span><span class="p">(</span><span class="n">yaml_tag_ns</span><span class="o">=</span><span class="s1">&#39;com.yamlable.example&#39;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">Foo</span><span class="p">(</span><span class="n">YamlAble</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="s2">&quot;hey&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Constructor &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="n">a</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">b</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; String representation for prints &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="nb">dict</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+</code></pre></div>
+<!-- GENERATED FROM PYTHON SOURCE LINES 36-37 -->
+
+<p>That's it! Let's check that our class is correct and allows us to create instances:</p>
+<!-- GENERATED FROM PYTHON SOURCE LINES 37-42 -->
+
+<div class="highlight"><pre><span></span><code><span class="n">f</span> <span class="o">=</span> <span class="n">Foo</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;hello&#39;</span><span class="p">)</span>
+<span class="n">f</span>
+</code></pre></div>
+<p class="mkd-glr-script-out">Out:</p>
+<div class="mkd-glr-script-out-disp highlight"><pre><span></span><code>Foo - <span class="o">{</span><span class="s1">&#39;a&#39;</span>: <span class="m">1</span>, <span class="s1">&#39;b&#39;</span>: <span class="s1">&#39;hello&#39;</span><span class="o">}</span>
+</code></pre></div>
+<!-- GENERATED FROM PYTHON SOURCE LINES 43-44 -->
+
+<p>Now let's dump it to a YAML document using <code>pyyaml</code>:</p>
+<!-- GENERATED FROM PYTHON SOURCE LINES 44-49 -->
+
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">yaml</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+</code></pre></div>
+<p class="mkd-glr-script-out">Out:</p>
+<div class="mkd-glr-script-out-disp highlight"><pre><span></span><code>!yamlable/com.yamlable.example.Foo
+a: <span class="m">1</span>
+b: hello
+</code></pre></div>
+<!-- GENERATED FROM PYTHON SOURCE LINES 50-51 -->
+
+<p>we can also load an instance from a document:</p>
+<!-- GENERATED FROM PYTHON SOURCE LINES 51-59 -->
+
+<div class="highlight"><pre><span></span><code><span class="n">f2</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">!yamlable/com.yamlable.example.Foo</span>
+<span class="s2">a: 0</span>
+<span class="s2">b: hey</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f2</span><span class="p">)</span>
+</code></pre></div>
+<p class="mkd-glr-script-out">Out:</p>
+<div class="mkd-glr-script-out-disp highlight"><pre><span></span><code>Foo - <span class="o">{</span><span class="s1">&#39;a&#39;</span>: <span class="m">0</span>, <span class="s1">&#39;b&#39;</span>: <span class="s1">&#39;hey&#39;</span><span class="o">}</span>
+</code></pre></div>
+<!-- GENERATED FROM PYTHON SOURCE LINES 60-61 -->
+
+<p>For more general cases where your object is embedded in a more complex structure for example, it will work as expected:</p>
+<!-- GENERATED FROM PYTHON SOURCE LINES 61-65 -->
+
+<div class="highlight"><pre><span></span><code><span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;foo&#39;</span><span class="p">:</span> <span class="n">f</span><span class="p">,</span> <span class="s1">&#39;foo2&#39;</span><span class="p">:</span> <span class="mi">12</span><span class="p">}</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
+</code></pre></div>
+<p class="mkd-glr-script-out">Out:</p>
+<div class="mkd-glr-script-out-disp highlight"><pre><span></span><code>foo: !yamlable/com.yamlable.example.Foo
+  a: <span class="m">1</span>
+  b: hello
+foo2: <span class="m">12</span>
+</code></pre></div>
+<!-- GENERATED FROM PYTHON SOURCE LINES 66-72 -->
+
+<p>In addition, the object directly offers the <code>dump_yaml</code> (dumping to file) / <code>dumps_yaml</code> (dumping to string)
+convenience methods, and the class directly offers the <code>load_yaml</code> (load from file) / <code>loads_yaml</code> (load from string)
+convenience methods.</p>
+<p>See <a href="http://pyyaml.org/wiki/PyYAMLDocumentation">PyYaml documentation</a> for the various formatting arguments that you
+can use, they are the same than in the <code>yaml.dump</code> method. For example:</p>
+<!-- GENERATED FROM PYTHON SOURCE LINES 72-76 -->
+
+<div class="highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">dumps_yaml</span><span class="p">(</span><span class="n">default_flow_style</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+</code></pre></div>
+<p class="mkd-glr-script-out">Out:</p>
+<div class="mkd-glr-script-out-disp highlight"><pre><span></span><code>!yamlable/com.yamlable.example.Foo
+a: <span class="m">1</span>
+b: hello
+</code></pre></div>
+<!-- GENERATED FROM PYTHON SOURCE LINES 77-90 -->
+
+<h2 id="2-customization">2. Customization<a class="headerlink" href="#2-customization" title="Permanent link">&para;</a></h2>
+<h3 id="a-dumperloader">a. dumper/loader<a class="headerlink" href="#a-dumperloader" title="Permanent link">&para;</a></h3>
+<p>As could be seen above, <code>YamlAble</code> comes with a default implementation of the yaml formatting and parsing
+associated with the classes. This is controlled by two methods that you may wish to override:</p>
+<ul>
+<li><code>__to_yaml_dict__</code> is an instance method that controls what to dump. By default it returns <code>vars(self)</code></li>
+<li><code>__from_yaml_dict__</code> is a class method that controls the loading process. By default it returns <code>cls(**dct)</code>.</li>
+</ul>
+<p>You may wish to override one, or both of these methods.
+For example if you do not wish to dump all of the object attributes:</p>
+<!-- GENERATED FROM PYTHON SOURCE LINES 90-113 -->
+
+<div class="highlight"><pre><span></span><code><span class="nd">@yaml_info</span><span class="p">(</span><span class="n">yaml_tag_ns</span><span class="o">=</span><span class="s1">&#39;com.yamlable.example&#39;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">CustomFoo</span><span class="p">(</span><span class="n">YamlAble</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Constructor &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="n">a</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">b</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">irrelevant</span> <span class="o">=</span> <span class="mi">37</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; String representation for prints &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="nb">dict</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">,</span> <span class="n">irrelevant</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">irrelevant</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__to_yaml_dict__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Do not dump &#39;irrelevant&#39;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">}</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">__from_yaml_dict__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dct</span><span class="p">,</span> <span class="n">yaml_tag</span><span class="p">):</span>
+        <span class="c1"># Accept a default value for b</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">dct</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">],</span> <span class="n">dct</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s2">&quot;default&quot;</span><span class="p">))</span>
+</code></pre></div>
+<!-- GENERATED FROM PYTHON SOURCE LINES 114-115 -->
+
+<p>Let's test it: loading...</p>
+<!-- GENERATED FROM PYTHON SOURCE LINES 115-122 -->
+
+<div class="highlight"><pre><span></span><code><span class="n">f3</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">!yamlable/com.yamlable.example.CustomFoo</span>
+<span class="s2">a: 0</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f3</span><span class="p">)</span>
+</code></pre></div>
+<p class="mkd-glr-script-out">Out:</p>
+<div class="mkd-glr-script-out-disp highlight"><pre><span></span><code>CustomFoo - <span class="o">{</span><span class="s1">&#39;a&#39;</span>: <span class="m">0</span>, <span class="s1">&#39;b&#39;</span>: <span class="s1">&#39;default&#39;</span>, <span class="s1">&#39;irrelevant&#39;</span>: <span class="m">37</span><span class="o">}</span>
+</code></pre></div>
+<!-- GENERATED FROM PYTHON SOURCE LINES 123-124 -->
+
+<p>...and dumping again</p>
+<!-- GENERATED FROM PYTHON SOURCE LINES 124-127 -->
+
+<div class="highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="n">f3</span><span class="o">.</span><span class="n">dumps_yaml</span><span class="p">())</span>
+</code></pre></div>
+<p class="mkd-glr-script-out">Out:</p>
+<div class="mkd-glr-script-out-disp highlight"><pre><span></span><code>!yamlable/com.yamlable.example.CustomFoo
+a: <span class="m">0</span>
+b: default
+</code></pre></div>
+<!-- GENERATED FROM PYTHON SOURCE LINES 128-135 -->
+
+<h3 id="b-yaml-tag">b. YAML tag<a class="headerlink" href="#b-yaml-tag" title="Permanent link">&para;</a></h3>
+<p>You probably noticed in the above examples that the dumped YAML document contains a tag such as
+<code>!yamlable/com.yamlable.example.CustomFoo</code>.</p>
+<p>When you dump a <code>YamlAble</code> object <code>o</code> to yaml, the corresponding tag is <code>f!yamlable/{o.__yaml_tag_suffix__}</code>.
+Note that you can override the class attribute, or even the instance attribute:</p>
+<!-- GENERATED FROM PYTHON SOURCE LINES 135-139 -->
+
+<div class="highlight"><pre><span></span><code><span class="n">f3</span><span class="o">.</span><span class="n">__yaml_tag_suffix__</span> <span class="o">=</span> <span class="s2">&quot;wow_you_changed_me&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f3</span><span class="o">.</span><span class="n">dumps_yaml</span><span class="p">())</span>
+</code></pre></div>
+<p class="mkd-glr-script-out">Out:</p>
+<div class="mkd-glr-script-out-disp highlight"><pre><span></span><code>!yamlable/wow_you_changed_me
+a: <span class="m">0</span>
+b: default
+</code></pre></div>
+<!-- GENERATED FROM PYTHON SOURCE LINES 140-143 -->
+
+<p>The <code>@yaml_info</code> decorator is just a convenient way to fill the <code>__yaml_tag_suffix__</code> attribute on a class, nothing
+more.
+You can either provide a full yaml tag suffix:</p>
+<!-- GENERATED FROM PYTHON SOURCE LINES 143-151 -->
+
+<div class="highlight"><pre><span></span><code><span class="nd">@yaml_info</span><span class="p">(</span><span class="s2">&quot;com.example.WowObject&quot;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">MyFoo</span><span class="p">(</span><span class="n">YamlAble</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">MyFoo</span><span class="o">.</span><span class="n">__yaml_tag_suffix__</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">MyFoo</span><span class="p">()</span><span class="o">.</span><span class="n">dumps_yaml</span><span class="p">())</span>
+</code></pre></div>
+<p class="mkd-glr-script-out">Out:</p>
+<div class="mkd-glr-script-out-disp highlight"><pre><span></span><code>com.example.WowObject
+!yamlable/com.example.WowObject <span class="o">{}</span>
+</code></pre></div>
+<!-- GENERATED FROM PYTHON SOURCE LINES 152-156 -->
+
+<p>Notice that this is great for retrocompatiblity: you can change your class name or module without changing the
+YAML serialization.</p>
+<p>Otherwise you can simply provide a namespace, that will be appended with <code>.{cls.__name__}</code>:</p>
+<!-- GENERATED FROM PYTHON SOURCE LINES 156-164 -->
+
+<div class="highlight"><pre><span></span><code><span class="nd">@yaml_info</span><span class="p">(</span><span class="n">yaml_tag_ns</span><span class="o">=</span><span class="s2">&quot;com.example&quot;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">MyFoo</span><span class="p">(</span><span class="n">YamlAble</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">MyFoo</span><span class="o">.</span><span class="n">__yaml_tag_suffix__</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">MyFoo</span><span class="p">()</span><span class="o">.</span><span class="n">dumps_yaml</span><span class="p">())</span>
+</code></pre></div>
+<p class="mkd-glr-script-out">Out:</p>
+<div class="mkd-glr-script-out-disp highlight"><pre><span></span><code>com.example.MyFoo
+!yamlable/com.example.MyFoo <span class="o">{}</span>
+</code></pre></div>
+<!-- GENERATED FROM PYTHON SOURCE LINES 165-177 -->
+
+<p>In that case, you'll have to be sure that your class name does not change over time.
+If you do not like the <code>!yamlable</code> prefix, you should use the
+<a href="#3-alternate-way-yamlobject2">alternate <code>YamlObject2</code> class</a> - in that case the decorator should not be used.</p>
+<h2 id="3-alternate-way-yamlobject2">3. Alternate way: <code>YamlObject2</code><a class="headerlink" href="#3-alternate-way-yamlobject2" title="Permanent link">&para;</a></h2>
+<p>If you absolutely wish to use PyYaml's <code>YamlObject</code> for some reason, you can use <code>YamlObject2</code> as an alternative to
+<code>YamlAble</code>. But it comes with the metaclass, like <code>YamlObject</code>.</p>
+<p>Nevertheless, the way to work is very similar: simply override the optional methods. However you must specify the
+<strong>entire</strong> yaml tag directly using the <code>yaml_tag</code> class variable. The <code>@yaml_info</code> decorator
+can not be used with classes subclassing <code>YamlObject2</code>.</p>
+<!-- GENERATED FROM PYTHON SOURCE LINES 177-212 -->
+
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">yamlable</span> <span class="kn">import</span> <span class="n">YamlObject2</span>
+
+<span class="k">class</span> <span class="nc">CustomFoo2</span><span class="p">(</span><span class="n">YamlObject2</span><span class="p">):</span>
+    <span class="n">yaml_tag</span> <span class="o">=</span> <span class="s1">&#39;!foo&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Constructor &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="n">a</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">b</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">irrelevant</span> <span class="o">=</span> <span class="mi">37</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; String representation for prints &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="nb">dict</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">,</span> <span class="n">irrelevant</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">irrelevant</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__to_yaml_dict__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Do not dump &#39;irrelevant&#39;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">}</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">__from_yaml_dict__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dct</span><span class="p">,</span> <span class="n">yaml_tag</span><span class="p">):</span>
+        <span class="c1"># Accept a default value for b</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">dct</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">],</span> <span class="n">dct</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s2">&quot;default&quot;</span><span class="p">))</span>
+
+<span class="c1"># instantiate</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">CustomFoo2</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;hello&#39;</span><span class="p">)</span>
+
+<span class="c1"># dump to yaml</span>
+<span class="n">o</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">o</span><span class="p">))</span>
+</code></pre></div>
+<p class="mkd-glr-script-out">Out:</p>
+<div class="mkd-glr-script-out-disp highlight"><pre><span></span><code>!foo
+a: <span class="m">1</span>
+b: hello
+
+CustomFoo2 - <span class="o">{</span><span class="s1">&#39;a&#39;</span>: <span class="m">1</span>, <span class="s1">&#39;b&#39;</span>: <span class="s1">&#39;hello&#39;</span>, <span class="s1">&#39;irrelevant&#39;</span>: <span class="m">37</span><span class="o">}</span>
+</code></pre></div>
+<!-- GENERATED FROM PYTHON SOURCE LINES 213-217 -->
+
+<h2 id="4-support-for-sequences-and-scalars">4. Support for sequences and scalars<a class="headerlink" href="#4-support-for-sequences-and-scalars" title="Permanent link">&para;</a></h2>
+<p>Objects can also be loaded from YAML sequences:</p>
+<!-- GENERATED FROM PYTHON SOURCE LINES 217-224 -->
+
+<div class="highlight"><pre><span></span><code><span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">!yamlable/com.yamlable.example.Foo</span>
+<span class="s2">- 0</span>
+<span class="s2">- hey</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
+</code></pre></div>
+<p class="mkd-glr-script-out">Out:</p>
+<div class="mkd-glr-script-out-disp highlight"><pre><span></span><code>Foo - <span class="o">{</span><span class="s1">&#39;a&#39;</span>: <span class="m">0</span>, <span class="s1">&#39;b&#39;</span>: <span class="s1">&#39;hey&#39;</span><span class="o">}</span>
+</code></pre></div>
+<!-- GENERATED FROM PYTHON SOURCE LINES 225-229 -->
+
+<p>The default implementation of <code>__from_yaml_list__</code> (that you may wish to override in your subclass), is to call
+the constructor with the sequence contents as positional arguments.</p>
+<p>The same also works for scalars:</p>
+<!-- GENERATED FROM PYTHON SOURCE LINES 229-234 -->
+
+<div class="highlight"><pre><span></span><code><span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">!yamlable/com.yamlable.example.Foo 0</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
+</code></pre></div>
+<p class="mkd-glr-script-out">Out:</p>
+<div class="mkd-glr-script-out-disp highlight"><pre><span></span><code>Foo - <span class="o">{</span><span class="s1">&#39;a&#39;</span>: <span class="s1">&#39;0&#39;</span>, <span class="s1">&#39;b&#39;</span>: <span class="s1">&#39;hey&#39;</span><span class="o">}</span>
+</code></pre></div>
+<!-- GENERATED FROM PYTHON SOURCE LINES 235-241 -->
+
+<p>The default implementation of <code>__from_yaml_scalar__</code> (that you may wish to override in your subclass), is to call
+the constructor with the scalar as first positional argument.</p>
+<div class="admonition warning">
+<p class="admonition-title">Scalars are not resolved</p>
+<p>As can be seen in the above example, scalars are not auto-resolved when constructing an object from a scalar. So an
+integer <code>0</code> is actually received as a string <code>"0"</code> by <code>from_yaml_scalar</code>.</p>
+</div>
+<p><strong>Total running time of the script:</strong> ( 0 minutes  0.015 seconds)</p>
+<div id="download_links"></div>
+
+<p><a class="md-button center" href="../1_basic_usage_demo.py"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M216 0h80c13.3 0 24 10.7 24 24v168h87.7c17.8 0 26.7 21.5 14.1 34.1L269.7 378.3c-7.5 7.5-19.8 7.5-27.3 0L90.1 226.1c-12.6-12.6-3.7-34.1 14.1-34.1H192V24c0-13.3 10.7-24 24-24zm296 376v112c0 13.3-10.7 24-24 24H24c-13.3 0-24-10.7-24-24V376c0-13.3 10.7-24 24-24h146.7l49 49c20.1 20.1 52.5 20.1 72.6 0l49-49H488c13.3 0 24 10.7 24 24zm-124 88c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20zm64 0c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20z"/></svg></span> Download Python source code: 1_basic_usage_demo.py</a></p>
+<p><a class="md-button center" href="../1_basic_usage_demo.ipynb"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M216 0h80c13.3 0 24 10.7 24 24v168h87.7c17.8 0 26.7 21.5 14.1 34.1L269.7 378.3c-7.5 7.5-19.8 7.5-27.3 0L90.1 226.1c-12.6-12.6-3.7-34.1 14.1-34.1H192V24c0-13.3 10.7-24 24-24zm296 376v112c0 13.3-10.7 24-24 24H24c-13.3 0-24-10.7-24-24V376c0-13.3 10.7-24 24-24h146.7l49 49c20.1 20.1 52.5 20.1 72.6 0l49-49H488c13.3 0 24 10.7 24 24zm-124 88c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20zm64 0c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20z"/></svg></span> Download Jupyter notebook: 1_basic_usage_demo.ipynb</a></p>
+<p><a class="mkd-glr-signature" href="https://mkdocs-gallery.github.io">Gallery generated by mkdocs-gallery</a></p>
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../" class="md-footer__link md-footer__link--prev" aria-label="Previous: Usage examples" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Usage examples
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../2_codecs_demo/" class="md-footer__link md-footer__link--next" aria-label="Next: Writing Codecs" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Writing Codecs
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.indexes"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.22074ed6.min.js"}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.960e086b.min.js"></script>
+      
+    
+  </body>
+</html>

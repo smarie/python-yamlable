@@ -15,7 +15,7 @@ PyYaml is a great library. However it is a bit hard for anyone to add the yaml c
 
 You can then optionally override the methods `to_yaml_dict` and `from_yaml_dict` to write to / load from a dictionary, so as to adapt the yaml-ability to your class needs.
 
-In addition `yamlable` provides a way to create Yaml codecs for several object types at the same time (`YamlCodec`) (see [Usage](./usage) page)
+In addition `yamlable` provides a way to create Yaml codecs for several object types at the same time (`YamlCodec`).
 
 
 ## Installing

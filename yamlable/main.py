@@ -3,7 +3,11 @@
 #
 #  License: 3-clause BSD, <https://github.com/smarie/python-yamlable/blob/master/LICENSE>
 
-import collections
+try:
+    from collections.abc import Mapping
+except ImportError:
+    from collections import Mapping
+
 from abc import abstractmethod, ABCMeta
 
 import six
@@ -520,7 +524,7 @@ class YamlCodec(six.with_metaclass(ABCMeta, object)):
         """
         # Convert objects to a dictionary of their representation
         yaml_tag_suffix, obj_as_dict = cls.to_yaml_dict(obj)
-        if not isinstance(obj_as_dict, collections.Mapping) or not isinstance(yaml_tag_suffix, str):
+        if not isinstance(obj_as_dict, Mapping) or not isinstance(yaml_tag_suffix, str):
             raise TypeError("`to_yaml_dict` did not return correct results. It should return a tuple of "
                             "`yaml_tag_suffix, obj_as_dict`")
 

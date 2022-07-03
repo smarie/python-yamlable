@@ -9,7 +9,7 @@ import sys
 # add parent folder to python path so that we can import noxfile_utils.py
 # note that you need to "pip install -r noxfile-requiterements.txt" for this file to work.
 sys.path.append(str(Path(__file__).parent / "ci_tools"))
-from nox_utils import PY27, PY37, PY36, PY35, PY38, PY39, power_session, rm_folder, rm_file, PowerSession  # noqa
+from nox_utils import PY27, PY37, PY36, PY35, PY38, PY39, PY310, power_session, rm_folder, rm_file, PowerSession  # noqa
 
 
 pkg_name = "yamlable"
@@ -17,6 +17,7 @@ gh_org = "smarie"
 gh_repo = "python-yamlable"
 
 ENVS = {
+    PY310: {"coverage": False, "pkg_specs": {"pip": ">19"}},
     PY39: {"coverage": False, "pkg_specs": {"pip": ">19"}},
     PY27: {"coverage": False, "pkg_specs": {"pip": ">10"}},
     PY35: {"coverage": False, "pkg_specs": {"pip": ">10", "PyYaml": "<5"}},

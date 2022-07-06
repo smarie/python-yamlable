@@ -13,29 +13,42 @@
         <h1>Coverage report:
             <span class="pc_cov">84%</span>
         </h1>
-        <div id="help_panel_wrapper">
+        <aside id="help_panel_wrapper">
             <input id="help_panel_state" type="checkbox">
             <label for="help_panel_state">
                 <img id="keyboard_icon" src="keybd_closed.png" alt="Show/hide keyboard shortcuts" />
             </label>
             <div id="help_panel">
                 <p class="legend">Shortcuts on this page</p>
-                <div>
-                    <p class="keyhelp">
+                <div class="keyhelp">
+                    <p>
                         <kbd>n</kbd>
                         <kbd>s</kbd>
                         <kbd>m</kbd>
                         <kbd>x</kbd>
                         <kbd>b</kbd>
                         <kbd>p</kbd>
-                        <kbd>c</kbd> &nbsp; change column sorting
+                        <kbd>c</kbd>
+                        &nbsp; change column sorting
+                    </p>
+                    <p>
+                        <kbd>[</kbd>
+                        <kbd>]</kbd>
+                        &nbsp; prev/next file
+                    </p>
+                    <p>
+                        <kbd>?</kbd> &nbsp; show/hide this help
                     </p>
                 </div>
             </div>
-        </div>
+        </aside>
         <form id="filter_container">
             <input id="filter" type="text" value="" placeholder="filter..." />
         </form>
+        <p class="text">
+            <a class="nav" href="https://coverage.readthedocs.io">coverage.py v6.4.1</a>,
+            created at 2022-07-06 08:57 +0000
+        </p>
     </div>
 </header>
 <main id="index">
@@ -81,12 +94,12 @@
             </tr>
             <tr class="file">
                 <td class="name left"><a href="d_589181e29c753b50_main_py.html">yamlable/main.py</a></td>
-                <td>138</td>
+                <td>139</td>
                 <td>14</td>
-                <td>6</td>
+                <td>8</td>
                 <td>68</td>
                 <td>16</td>
-                <td class="right" data-ratio="176 206">85%</td>
+                <td class="right" data-ratio="177 207">86%</td>
             </tr>
             <tr class="file">
                 <td class="name left"><a href="d_589181e29c753b50_yaml_objects_py.html">yamlable/yaml_objects.py</a></td>
@@ -101,12 +114,12 @@
         <tfoot>
             <tr class="total">
                 <td class="name left">Total</td>
-                <td>270</td>
+                <td>271</td>
                 <td>32</td>
-                <td>24</td>
+                <td>26</td>
                 <td>110</td>
                 <td>23</td>
-                <td class="right" data-ratio="319 380">84%</td>
+                <td class="right" data-ratio="320 381">84%</td>
             </tr>
         </tfoot>
     </table>
@@ -117,10 +130,17 @@
 <footer>
     <div class="content">
         <p>
-            <a class="nav" href="https://coverage.readthedocs.io">coverage.py v6.3.1</a>,
-            created at 2022-02-04 22:06 +0000
+            <a class="nav" href="https://coverage.readthedocs.io">coverage.py v6.4.1</a>,
+            created at 2022-07-06 08:57 +0000
         </p>
     </div>
+    <aside class="hidden">
+        <a id="prevFileLink" class="nav" href="d_589181e29c753b50_yaml_objects_py.html"/>
+        <a id="nextFileLink" class="nav" href="d_589181e29c753b50___init___py.html"/>
+        <button type="button" class="button_prev_file" data-shortcut="["/>
+        <button type="button" class="button_next_file" data-shortcut="]"/>
+        <button type="button" class="button_show_hide_help" data-shortcut="?"/>
+    </aside>
 </footer>
 </body>
 </html>

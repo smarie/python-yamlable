@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.1.1 - Python 3.10 compliance
+
+ - Fixed bug with Python 3.10. PR [#17](https://github.com/smarie/python-yamlable/pull/17) by [`jfuruness`](https://github.com/jfuruness).
+
 ### 1.1.0 - Now load objects from sequences and scalars too
 
  - Objects (subclasses of `YamlAble` or `YamlObject2`) can now be loaded from both mappings, sequences and scalars. Users may override the default behaviour by overriding `__from_yaml_list__` and `__from_yaml_scalar__`. Codecs (subclasses of `YamlCodec`) can also support this feature, through the `from_yaml_list` and `from_yaml_scalar` methods (not implemented by default). Fixes [#12](https://github.com/smarie/python-yamlable/issues/12)

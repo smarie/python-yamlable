@@ -22,6 +22,7 @@ nox_logger = logging.getLogger("nox")
 
 
 PY27, PY35, PY36, PY37, PY38, PY39 = "2.7", "3.5", "3.6", "3.7", "3.8", "3.9"
+PY310 = "3.10"
 DONT_INSTALL = "dont_install"
 
 
